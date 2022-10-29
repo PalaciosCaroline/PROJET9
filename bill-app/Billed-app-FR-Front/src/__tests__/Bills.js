@@ -46,3 +46,39 @@ describe("Given I am connected as an employee", () => {
     })
   })
 })
+
+//à revoir
+describe('Given I am connected as Employe and I am on bills page', () => {
+  describe('When I click on the icon eye', () => {
+    test('A modal should open with a bill view', () => {
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee'
+      }))
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+      window.onNavigate(ROUTES_PATH.Bills)
+
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      document.body.innerHTML = BillsUI({ data: bills })
+      const iconEye = screen.getAllByTestId("icon-eye");
+      const modaleFile = document.getElementById("modaleFile")
+      $.fn.modal = jest.fn(() => modaleFile.classList.add("show"))
+      const handleClickIconEye = jest.fn(BillsUI.handleClickIconEye);
+      iconEye.forEach(icon => {
+        icon.addEventListener('click', handleClickIconEye)
+        userEvent.click(icon);
+      })
+      expect(handleClickIconEye).toHaveBeenCalledTimes(iconEye.length);
+
+      iconEye[0].addEventListener('click', handleClickIconEye)
+      fireEvent.click(iconEye[0]);
+      expect(modaleFile).toBeTruthy();
+      // expect(modaleFile).toHaveClass('show');
+    })
+  })
+})
