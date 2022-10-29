@@ -83,5 +83,35 @@ describe("Given I am connected as an employee", () => {
       expect(newBillFile.files[0].name).toBeDefined();
       expect(newBillFile.files[0].name).toBe("image.png");
     })
+
+    test("Then I upload a new file with a wrong format, a new file is not upload", async () => {
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      window.onNavigate(ROUTES_PATH.NewBill);
+      const html = NewBillUI();
+      document.body.innerHTML = html;
+      const newBilltest = new NewBill({
+        document,
+        onNavigate,
+        store: mockStore,
+        localStorage: window.localStorage,
+      });
+      const handleChangeFile = jest.fn((e) => newBilltest.handleChangeFile(e));
+      const fileTest = new File(["FilewrongImage"], "image.pdf", {
+        type: "image/pdf",
+      });
+      const newBillFile = screen.getByTestId("file");
+
+      jest.spyOn(window, "alert").mockImplementation(() => {});
+
+      newBillFile.addEventListener("change", handleChangeFile);
+      userEvent.upload(newBillFile, fileTest);
+
+      expect(newBillFile.files[0].name).toBeDefined();
+      expect(window.alert).toBeCalled();
+    })
   })
 })
+
+ 
