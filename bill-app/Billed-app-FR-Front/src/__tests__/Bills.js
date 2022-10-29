@@ -174,3 +174,37 @@ describe("When an error occurs on API", () => {
     })
 })
 
+describe('Given I am connected as Employe and I am on bills page', () => {
+  describe('When I click on the button btn-new-bill', () => {
+    test('Change the Navigate', () => {
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee'
+      }))
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+      window.onNavigate(ROUTES_PATH.Bills)
+
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      document.body.innerHTML = BillsUI({ data: bills })
+    
+      const handleClickNewBill = jest.fn(BillsUI.handleClickNewBill);
+      const btnNewBill = screen.getByTestId('btn-new-bill');
+      $.fn.modal = jest.fn();
+      btnNewBill.addEventListener('click', handleClickNewBill);
+      userEvent.click(btnNewBill);
+      expect(handleClickNewBill).toHaveBeenCalled();
+      expect(handleClickNewBill).toBeDefined();
+      const modal = screen.getByTestId('modaleFileEmploye');
+      expect(modal).toBeTruthy();
+      // expect(modal).toHaveClass('show');
+    })
+  })
+})
+
+
+
