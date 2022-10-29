@@ -82,3 +82,35 @@ describe('Given I am connected as Employe and I am on bills page', () => {
     })
   })
 })
+
+
+// test d'intégration GET
+describe("Given I am a user connected as Employe", () => {
+  describe("When I navigate to Bills", () => {
+    test("fetches bills from mock API GET", async () => {
+      localStorage.setItem("user", JSON.stringify({ type: 'Employee', email: "employee@test.tld" }));
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+      window.onNavigate(ROUTES_PATH.Bills)
+      await waitFor(() => screen.getByTestId("Mes-notes-de-frais"))
+      const contentBtnNewBill  = await screen.getByTestId("btn-new-bill")
+      expect(contentBtnNewBill).toBeTruthy()
+      const contentBills  = await screen.getByTestId("tbody")
+      expect(contentBills).toBeTruthy()
+    })
+
+     // it.todo("fetches bills from mock API GET", async () => {
+    //   mockedBills.bills.mockImplementationOnce(() => {
+    //     return {
+    //       list: () => {
+    //         return Promise.resolve([{data: bills}])
+    //       }
+    //     }
+    //   })
+    //   document.body.innerHTML = BillsUI({ data: bills})
+    //   expect(bills.data.length).toBe(4);
+    // })
+  })
+})
