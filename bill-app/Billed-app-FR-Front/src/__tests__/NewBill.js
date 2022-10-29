@@ -114,4 +114,79 @@ describe("Given I am connected as an employee", () => {
   })
 })
 
+
+// describe('Given I am connected as an employee', () => {
+//   describe('When I create a new bill', () => {
+//       it.todo('Add bill to mock API POST', async () => {
+         //  méthode post
+
+         //  expect(bills.data.length).toBe(?);
+//       });
+//     })
+//   })
+
+// describe("I submit a valid bill form", () => {
+//   test('then a bill is created',  () => {
+
+//     beforeEach(() => {
+//       // jest.spyOn(mockStore, "post")
+//       const spy = jest.spyOn(mockStore, 'post');
+//       Object.defineProperty(
+//           window,
+//           'localStorage',
+//           { value: localStorageMock }
+//       )
+//       window.localStorage.setItem('user', JSON.stringify({
+//         type: 'Employee',
+//         email: "employee@test.tld"
+//       }))
+//     })
+
+//     document.body.innerHTML = NewBillUI()
+//      const newBill = new NewBill({
+//        document, onNavigate, store: mockStore , localStorage: window.localStorage
+//      })          
  
+//     const submit = screen.queryByTestId('form-new-bill')
+
+//     const newBillTest = {
+//       name: "newBillTestName",
+//       date: "2020-01-01",
+//       type: "Hôtel et logement",
+//       pct: 10,
+//       amount: 200,
+//       "email": "a@a",
+//       vat: 40,
+//       commentary: "",
+//       fileName: "imageTest",
+//       "fileUrl": "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=4df6ed2c-12c8-42a2-b013-346c1346f732"
+//     }
+
+//     newBill.createBill = (newBillTest) => newBillTest
+//     document.querySelector(`input[data-testid="expense-name"]`).value = newBillTest.name
+//     document.querySelector(`input[data-testid="datepicker"]`).value = newBillTest.date
+//     document.querySelector(`select[data-testid="expense-type"]`).value = newBillTest.type
+//     document.querySelector(`input[data-testid="amount"]`).value = newBillTest.amount
+//     document.querySelector(`input[data-testid="vat"]`).value = newBillTest.vat
+//     document.querySelector(`input[data-testid="pct"]`).value = newBillTest.pct
+//     document.querySelector(`textarea[data-testid="commentary"]`).value = newBillTest.commentary
+//     newBill.fileUrl = newBillTest.fileUrl;
+//     newBill.fileName = newBillTest.fileName 
+
+//     const handleSubmit = jest.fn((e) => {e.preventDefault(); newBill.handleSubmit(e)})
+//     const updateBill = jest.fn((e) => newBill.updateBill())
+
+//     submit.addEventListener('click', handleSubmit)
+
+//     fireEvent.click(submit)
+   
+//     expect(handleSubmit).toHaveBeenCalled()
+
+//      const bills = await mockStore.post(newBill);
+ 
+//     expect(spy).toHaveBeenCalledTimes(1);
+         
+//     expect(bills.data.length).toBe(5);
+ 
+//   })
+// })
