@@ -114,3 +114,63 @@ describe("Given I am a user connected as Employe", () => {
     // })
   })
 })
+
+describe("When an error occurs on API", () => {
+  beforeEach(() => {
+    jest.spyOn(mockedBills, "bills")
+    Object.defineProperty(
+        window,
+        'localStorage',
+        { value: localStorageMock }
+    )
+    window.localStorage.setItem('user', JSON.stringify({
+      type: 'Employee',
+      email: "employee@test.tld"
+    }))
+    const root = document.createElement("div")
+    root.setAttribute("id", "root")
+    document.body.appendChild(root)
+    router()
+  })
+
+  test("When corrupted data was introduced, return unformatted date in that case", async () => {
+   
+    window.onNavigate(ROUTES_PATH.Bills)
+
+    const onNavigate = (pathname) => {
+      document.body.innerHTML = ROUTES({ pathname })
+    }
+    bills[0].date = 'wrongDate';
+    document.body.innerHTML = BillsUI({ data: bills })
+      expect(bills[0].date).toBe('wrongDate');
+      const formatDates = screen.getAllByTestId('formatDate');
+      expect(formatDates[0]).toHaveTextContent('wrongDate'); 
+    })
+
+  test("fetches bills from an API and fails with 404 message error", async () => {
+    mockedBills.bills.mockImplementationOnce(() => {
+        return {
+          list: () => {
+            return Promise.reject(new Error("Erreur 404"))
+          }
+        }
+      })
+      document.body.innerHTML = BillsUI({ error: 'Erreur 404' })
+      const message = screen.getByText(/Erreur 404/)
+      expect(message).toBeTruthy()
+    })
+
+    test("fetches messages from an API and fails with 500 message error", async () => {
+      mockedBills.bills.mockImplementationOnce(() => {
+        return {
+          list: () => {
+            return Promise.reject(new Error("Erreur 500"))
+          }
+        }
+      })
+      document.body.innerHTML = BillsUI({ error: 'Erreur 500' })
+      const message = screen.getByText(/Erreur 500/)
+      expect(message).toBeTruthy()
+    })
+})
+
