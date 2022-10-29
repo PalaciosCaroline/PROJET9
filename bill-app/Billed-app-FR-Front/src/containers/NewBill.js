@@ -20,12 +20,16 @@ export default class NewBill {
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
+    console.log(fileName);
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
     formData.append('file', file)
     formData.append('email', email)
-
-    this.store
+    let idxDot = fileName.lastIndexOf(".") + 1;
+    let extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+      console.log(extFile)
+    if (extFile=="jpg" || extFile=="jpeg" || extFile=="png"){
+      this.store
       .bills()
       .create({
         data: formData,
@@ -39,7 +43,12 @@ export default class NewBill {
         this.fileUrl = fileUrl
         this.fileName = fileName
       }).catch(error => console.error(error))
+    } else{
+        e.target.value = '';
+        alert("Seulement les formats de fichiers jpg/jpeg et png sont autorisés!");
+    }
   }
+  
   handleSubmit = e => {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
