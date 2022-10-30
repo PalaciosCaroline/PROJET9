@@ -66,7 +66,8 @@ describe('Given I am connected as Employe and I am on bills page', () => {
       }
       document.body.innerHTML = BillsUI({ data: bills })
       const iconEye = screen.getAllByTestId("icon-eye");
-      const modaleFile = document.getElementById("modaleFile")
+      const modalFile = document.getElementById('modaleFile')
+      // const modaleFileEmploye = screen.getByTestId("modaleFileEmploye")
       $.fn.modal = jest.fn(() => modaleFile.classList.add("show"))
       const handleClickIconEye = jest.fn(BillsUI.handleClickIconEye);
       iconEye.forEach(icon => {
@@ -77,8 +78,10 @@ describe('Given I am connected as Employe and I am on bills page', () => {
 
       iconEye[0].addEventListener('click', handleClickIconEye)
       fireEvent.click(iconEye[0]);
+      expect(handleClickIconEye).toHaveBeenCalled()
       expect(modaleFile).toBeTruthy();
       // expect(modaleFile).toHaveClass('show');
+  
     })
   })
 })
