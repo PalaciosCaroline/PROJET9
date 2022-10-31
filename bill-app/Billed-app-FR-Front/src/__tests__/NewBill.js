@@ -82,6 +82,8 @@ describe("Given I am connected as an employee", () => {
       const newBillFileName = screen.getByTestId("expense-name");
       expect(newBillFile.files[0].name).toBeDefined();
       expect(newBillFile.files[0].name).toBe("image.png");
+      //create bills à vérifier
+
     })
 
     test("Then I upload a new file with a wrong format, a new file is not upload", async () => {

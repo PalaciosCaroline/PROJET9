@@ -9,7 +9,7 @@ const row = (bill) => {
     <tr>
       <td>${bill.type}</td>
       <td>${bill.name}</td>
-      <td data-testid="formatDate">${bill.date}</td>
+      <td data-testid="formatDate">${bill.formatedDate ? bill.formatedDate : bill.date}</td>
       <td>${bill.amount} €</td>
       <td>${bill.status}</td>
       <td>
@@ -20,7 +20,8 @@ const row = (bill) => {
   }
 
   const rows = (data) => {
-    return (data && data.length) ? data.sort(function (a, b) {
+    let sorted = data?.length > 0 ? [...data] : []
+    return (data && data.length) ? sorted.sort(function (a, b) {
       return a.date < b.date ? 1 : -1
     }).map(bill => {return row(bill)}).join("") : ""
   }

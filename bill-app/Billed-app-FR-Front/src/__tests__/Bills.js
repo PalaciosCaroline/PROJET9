@@ -8,16 +8,31 @@
 
 import {screen, waitFor} from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
+import Bills from "../containers/Bills"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
 
 import router from "../app/Router.js";
 import mockedBills from "../__mocks__/store"
-import store from "../__mocks__/store"
+import mockStore from "../__mocks__/store"
 import { log } from 'console'
 
 import NewBill from '../containers/NewBill.js'
+//jest.mock("../app/store", () => mockStore)
+
+describe('When I am on Bills page but it is loading', () => {
+  test('Then, Loading page should be rendered', () => {
+    document.body.innerHTML = BillsUI({ loading: true })
+    expect(screen.getAllByText('Loading...')).toBeTruthy()
+  })
+})
+describe('When I am on Bills page but back-end send an error message', () => {
+  test('Then, Error page should be rendered', () => {
+    document.body.innerHTML = BillsUI({ error: 'some error message' })
+    expect(screen.getAllByText('Erreur')).toBeTruthy()
+  })
+})
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -69,7 +84,7 @@ describe('Given I am connected as Employe and I am on bills page', () => {
       const modalFile = document.getElementById('modaleFile')
       // const modaleFileEmploye = screen.getByTestId("modaleFileEmploye")
       $.fn.modal = jest.fn(() => modaleFile.classList.add("show"))
-      const handleClickIconEye = jest.fn(BillsUI.handleClickIconEye);
+      const handleClickIconEye = jest.fn(Bills.handleClickIconEye);
       iconEye.forEach(icon => {
         icon.addEventListener('click', handleClickIconEye)
         userEvent.click(icon);
@@ -80,7 +95,7 @@ describe('Given I am connected as Employe and I am on bills page', () => {
       fireEvent.click(iconEye[0]);
       expect(handleClickIconEye).toHaveBeenCalled()
       expect(modaleFile).toBeTruthy();
-      // expect(modaleFile).toHaveClass('show');
+      //expect(modaleFile).toHaveClass('show');
   
     })
   })
@@ -104,7 +119,8 @@ describe("Given I am a user connected as Employe", () => {
       expect(contentBills).toBeTruthy()
     })
 
-     // it.todo("fetches bills from mock API GET", async () => {
+    //  it("fetches bills from mock API GET", async () => {
+     
     //   mockedBills.bills.mockImplementationOnce(() => {
     //     return {
     //       list: () => {
@@ -112,8 +128,10 @@ describe("Given I am a user connected as Employe", () => {
     //       }
     //     }
     //   })
+
     //   document.body.innerHTML = BillsUI({ data: bills})
-    //   expect(bills.data.length).toBe(4);
+
+    //  expect(bills.data.length).toBe(4);
     // })
   })
 })

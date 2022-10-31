@@ -147,6 +147,10 @@ describe('Given I am connected as an Admin', () => {
       userEvent.click(iconEdit)
       const bigBilledIcon = screen.queryByTestId("big-billed-icon")
       expect(bigBilledIcon).toBeTruthy()
+
+      const statusbillscontainer1 = document.getElementById('status-bills-container1').innerText;
+    
+      // expect(statusbillscontainer1).toBeNull()
     })
   })
 

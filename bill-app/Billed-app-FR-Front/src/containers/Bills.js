@@ -38,7 +38,8 @@ export default class {
             try {
               return {
                 ...doc,
-                date: formatDate(doc.date),
+                date: doc.date,
+                formatedDate: formatDate(doc.date),
                 status: formatStatus(doc.status)
               }
             } catch(e) {
@@ -54,7 +55,11 @@ export default class {
           })
           console.log('length', bills.length)
         return bills
+      }) 
+      // rajouter à la fonction (gestion des erreurs de fetch)
+      .catch(error => {
+        throw error;
       })
-    }
+    } 
   }
 }
