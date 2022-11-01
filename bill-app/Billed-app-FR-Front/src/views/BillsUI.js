@@ -9,7 +9,8 @@ const row = (bill) => {
     <tr>
       <td>${bill.type}</td>
       <td>${bill.name}</td>
-      <td data-testid="formatDate">${bill.formatedDate ? bill.formatedDate : bill.date}</td>
+      
+      <td data-testid="formatDate">${bill.date}</td>
       <td>${bill.amount} €</td>
       <td>${bill.status}</td>
       <td>
@@ -19,11 +20,23 @@ const row = (bill) => {
     `)
   }
 
+// <td data-testid="formatDate">${bill.formatedDate ? bill.formatedDate : bill.date}</td>
+
+  // const rows = (data) => {
+  //   return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  // }
+
+  // const rows = (data) => {
+  //   let sorted = data?.length > 0 ? [...data] : []
+  //   return (data && data.length) ? sorted.sort(function (a, b) {
+  //     return new Date(a.date) < new Date(b.date) ? 1 : -1
+  //   }).map(bill => {return row(bill)}).join("") : ""
+  // }
+
   const rows = (data) => {
-    let sorted = data?.length > 0 ? [...data] : []
-    return (data && data.length) ? sorted.sort(function (a, b) {
-      return a.date < b.date ? 1 : -1
-    }).map(bill => {return row(bill)}).join("") : ""
+    return (data && data.length) ? data
+        .sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : new Date(a.date) < new Date(b.date) ? 1 : 0))
+        .map(bill => row(bill)).join("") : ""
   }
 
 export default ({ data: bills, loading, error }) => {

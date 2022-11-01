@@ -48,10 +48,14 @@ describe("Given I am connected as an employee", () => {
       router()
       window.onNavigate(ROUTES_PATH.Bills)
       await waitFor(() => screen.getByTestId('icon-window'))
+      await waitFor(() => screen.getByTestId('icon-mail'))
       const windowIcon = screen.getByTestId('icon-window')
+      const mailIcon = screen.getByTestId('icon-mail')
       //to-do write expect expression
       expect(windowIcon).toHaveClass('active-icon');
+      expect(mailIcon).not.toHaveClass('active-icon');
     })
+    
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills })
       const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
@@ -97,6 +101,16 @@ describe('Given I am connected as Employe and I am on bills page', () => {
       expect(modaleFile).toBeTruthy();
       //expect(modaleFile).toHaveClass('show');
   
+    })
+
+    test('A modal should open with a right bill view', () => {
+      document.body.innerHTML = BillsUI({ data: bills })
+      const iconEye = screen.getAllByTestId('icon-eye')[0]
+      const fileUrl = "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a"
+      const handleClickIconEye = jest.fn(Bills.handleClickIconEye);
+      iconEye.addEventListener('click', handleClickIconEye)
+      fireEvent.click(iconEye);
+      expect(iconEye.dataset.billUrl).toEqual(fileUrl)
     })
   })
 })
@@ -161,12 +175,45 @@ describe("When an error occurs on API", () => {
     const onNavigate = (pathname) => {
       document.body.innerHTML = ROUTES({ pathname })
     }
+    
     bills[0].date = 'wrongDate';
     document.body.innerHTML = BillsUI({ data: bills })
       expect(bills[0].date).toBe('wrongDate');
       const formatDates = screen.getAllByTestId('formatDate');
       expect(formatDates[0]).toHaveTextContent('wrongDate'); 
     })
+
+    test('if corrupted data was introduced, should log the error}', async () => {
+
+      const corruptedStore = {
+        bills() {
+          return {
+            list() {
+              return Promise.resolve([{
+                "id": "47qAXb6fIm2zOKkLzMro",
+                "vat": "80",
+                "fileUrl": "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a",
+                "status": "pending",
+                "type": "Hôtel et logement",
+                "commentary": "séminaire billed",
+                "name": "encore",
+                "fileName": "preview-facture-free-201801-pdf-1.jpg",
+                "date": "wrongDate",
+                "amount": 400,
+                "commentAdmin": "ok",
+                "email": "a@a",
+                "pct": 20
+              }])
+            },
+          }
+        }
+      }
+      const billsTest = new Bills({ document, onNavigate, store: corruptedStore, localStorage: window.localStorage })
+      const consoleLog = jest.spyOn(console, 'log')
+      const data = await billsTest.getBills()
+      expect(consoleLog).toHaveBeenCalled()     
+    })
+  
 
   test("fetches bills from an API and fails with 404 message error", async () => {
     mockedBills.bills.mockImplementationOnce(() => {

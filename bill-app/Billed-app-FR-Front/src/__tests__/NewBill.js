@@ -18,7 +18,8 @@ import userEvent from "@testing-library/user-event";
 import { bills } from "../fixtures/bills.js";
 import { ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
-import { mockStore, mockedBills} from "../__mocks__/store";
+import { mockedBills} from "../__mocks__/store";
+import mockStore from "../__mocks__/store";
 import { log } from "console";
 import router from "../app/Router.js";
 
@@ -127,68 +128,58 @@ describe("Given I am connected as an employee", () => {
 //     })
 //   })
 
-// describe("I submit a valid bill form", () => {
-//   test('then a bill is created',  () => {
+describe("I submit a valid bill form", () => {
+  test('then a bill is created', async () => {
 
-//     beforeEach(() => {
-//       // jest.spyOn(mockStore, "post")
-//       const spy = jest.spyOn(mockStore, 'post');
-//       Object.defineProperty(
-//           window,
-//           'localStorage',
-//           { value: localStorageMock }
-//       )
-//       window.localStorage.setItem('user', JSON.stringify({
-//         type: 'Employee',
-//         email: "employee@test.tld"
-//       }))
-//     })
-
-//     document.body.innerHTML = NewBillUI()
-//      const newBill = new NewBill({
-//        document, onNavigate, store: mockStore , localStorage: window.localStorage
-//      })          
+    document.body.innerHTML = NewBillUI()
+     const newBill = new NewBill({
+       document, onNavigate, store: mockStore , localStorage: window.localStorage
+     })          
  
-//     const submit = screen.queryByTestId('form-new-bill')
+    const submit = screen.queryByTestId('form-new-bill')
 
-//     const newBillTest = {
-//       name: "newBillTestName",
-//       date: "2020-01-01",
-//       type: "Hôtel et logement",
-//       pct: 10,
-//       amount: 200,
-//       "email": "a@a",
-//       vat: 40,
-//       commentary: "",
-//       fileName: "imageTest",
-//       "fileUrl": "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=4df6ed2c-12c8-42a2-b013-346c1346f732"
-//     }
+    const newBillTest = {
+      name: "newBillTestName",
+      date: "2020-01-01",
+      type: "Hôtel et logement",
+      pct: 10,
+      amount: 200,
+      "email": "a@a",
+      vat: 40,
+      commentary: "",
+      fileName: "imageTest",
+      "fileUrl": "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=4df6ed2c-12c8-42a2-b013-346c1346f732"
+    }
 
-//     newBill.createBill = (newBillTest) => newBillTest
-//     document.querySelector(`input[data-testid="expense-name"]`).value = newBillTest.name
-//     document.querySelector(`input[data-testid="datepicker"]`).value = newBillTest.date
-//     document.querySelector(`select[data-testid="expense-type"]`).value = newBillTest.type
-//     document.querySelector(`input[data-testid="amount"]`).value = newBillTest.amount
-//     document.querySelector(`input[data-testid="vat"]`).value = newBillTest.vat
-//     document.querySelector(`input[data-testid="pct"]`).value = newBillTest.pct
-//     document.querySelector(`textarea[data-testid="commentary"]`).value = newBillTest.commentary
-//     newBill.fileUrl = newBillTest.fileUrl;
-//     newBill.fileName = newBillTest.fileName 
+    // newBill.createBill = (newBillTest) => newBillTest
+    // document.querySelector(`input[data-testid="expense-name"]`).value = newBillTest.name
+    // document.querySelector(`input[data-testid="datepicker"]`).value = newBillTest.date
+    // document.querySelector(`select[data-testid="expense-type"]`).value = newBillTest.type
+    // document.querySelector(`input[data-testid="amount"]`).value = newBillTest.amount
+    // document.querySelector(`input[data-testid="vat"]`).value = newBillTest.vat
+    // document.querySelector(`input[data-testid="pct"]`).value = newBillTest.pct
+    // document.querySelector(`textarea[data-testid="commentary"]`).value = newBillTest.commentary
+    // newBill.fileUrl = newBillTest.fileUrl;
+    // newBill.fileName = newBillTest.fileName 
 
-//     const handleSubmit = jest.fn((e) => {e.preventDefault(); newBill.handleSubmit(e)})
-//     const updateBill = jest.fn((e) => newBill.updateBill())
+    fireEvent.change(screen.getByTestId('expense-type'), { target: { value: newBillTest.type } })
+    fireEvent.change(screen.getByTestId('expense-name'), { target: { value: newBillTest.name } })
+    fireEvent.change(screen.getByTestId('datepicker'), { target: { value: newBillTest.date } })
+    fireEvent.change(screen.getByTestId('amount'), { target: { value: newBillTest.amount } })
+    fireEvent.change(screen.getByTestId('vat'), { target: { value: newBillTest.vat } })
+    fireEvent.change(screen.getByTestId('pct'), { target: { value: newBillTest.pct } })
+    fireEvent.change(screen.getByTestId('commentary'), { target: { value: newBillTest.commentary } })
+    newBill.fileUrl = newBillTest.fileUrl;
+    newBill.fileName = newBillTest.fileName 
 
-//     submit.addEventListener('click', handleSubmit)
-
-//     fireEvent.click(submit)
+    const handleSubmit = jest.spyOn(newBill, 'handleSubmit')
+    const updateBill = jest.spyOn(newBill, 'updateBill')
    
-//     expect(handleSubmit).toHaveBeenCalled()
+    submit.addEventListener('click', (e) => handleSubmit(e))
+    fireEvent.click(submit)
 
-//      const bills = await mockStore.post(newBill);
- 
-//     expect(spy).toHaveBeenCalledTimes(1);
-         
-//     expect(bills.data.length).toBe(5);
- 
-//   })
-// })
+    expect(handleSubmit).toHaveBeenCalled()
+    expect(updateBill).toHaveBeenCalled()
+  })
+})
+
