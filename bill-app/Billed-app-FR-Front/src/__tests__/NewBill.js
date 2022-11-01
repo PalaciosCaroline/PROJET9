@@ -34,6 +34,7 @@ describe("Given I am connected as an employee", () => {
       const html = NewBillUI()
       document.body.innerHTML = html
       //to-do write assertion
+    
       const formNewBill = screen.getByTestId("form-new-bill");
       expect(formNewBill).toBeTruthy();
     })
@@ -83,7 +84,10 @@ describe("Given I am connected as an employee", () => {
       const newBillFileName = screen.getByTestId("expense-name");
       expect(newBillFile.files[0].name).toBeDefined();
       expect(newBillFile.files[0].name).toBe("image.png");
+      jest.spyOn(window, "alert").mockImplementation(() => {});
+      expect(window.alert).not.toBeCalled();
       //create bills à vérifier
+      await new Promise(process.nextTick);
 
     })
 
@@ -110,9 +114,9 @@ describe("Given I am connected as an employee", () => {
 
       newBillFile.addEventListener("change", handleChangeFile);
       userEvent.upload(newBillFile, fileTest);
-
+      expect(handleChangeFile).toHaveBeenCalled()
       expect(newBillFile.files[0].name).toBeDefined();
-      expect(window.alert).toBeCalled();
+      expect(window.alert).toBeCalledWith('Seulement les formats de fichiers jpg/jpeg et png sont autorisés!');
     })
   })
 })

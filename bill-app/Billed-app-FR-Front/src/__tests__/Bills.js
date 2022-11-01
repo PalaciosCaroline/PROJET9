@@ -126,22 +126,56 @@ describe("Given I am a user connected as Employe", () => {
       document.body.append(root)
       router()
       window.onNavigate(ROUTES_PATH.Bills)
+      const bills = new Bills({ document, onNavigate, store: mockedBills, localStorage: window.localStorage })
+      const  handleClickNewBill = jest.fn(Bills.handleClickNewBill);
       await waitFor(() => screen.getByTestId("Mes-notes-de-frais"))
-      const contentBtnNewBill  = await screen.getByTestId("btn-new-bill")
-      expect(contentBtnNewBill).toBeTruthy()
+      const btnNewBill  = await screen.getByTestId("btn-new-bill")
+      expect(btnNewBill).toBeTruthy()
       const contentBills  = await screen.getByTestId("tbody")
       expect(contentBills).toBeTruthy()
+
+      btnNewBill.addEventListener('click', handleClickNewBill)
+      userEvent.click(btnNewBill);
+      // fireEvent.click(btnNewBill);
+      expect(handleClickNewBill).toHaveBeenCalled()
     })
 
-    //  it("fetches bills from mock API GET", async () => {
-     
-    //   mockedBills.bills.mockImplementationOnce(() => {
-    //     return {
-    //       list: () => {
-    //         return Promise.resolve([{data: bills}])
-    //       }
-    //     }
-    //   })
+    test("fetches bills from mock API POST", async () => {
+      beforeEach(() => {
+        jest.spyOn(mockedBills, "bills")
+        Object.defineProperty(
+            window,
+            'localStorage',
+            { value: localStorageMock }
+        )
+        window.localStorage.setItem('user', JSON.stringify({
+          type: 'Employee',
+          email: "employee@test.tld"
+        }))
+        const root = document.createElement("div")
+        root.setAttribute("id", "root")
+        document.body.appendChild(root)
+        router()
+      })
+      const billsTest = new Bills({ document, onNavigate, store: mockedBills, localStorage: window.localStorage })
+ 
+      const data = await billsTest.getBills()
+      expect(data.length).toBe(4)
+    })
+
+
+    //  test("fetches bills from mock API GET", async () => {
+    //   localStorage.setItem("user", JSON.stringify({ type: 'Employee', email: "employee@test.tld" }));
+    //   const root = document.createElement("div")
+    //   root.setAttribute("id", "root")
+    //   document.body.append(root)
+    //   router()
+    //   window.onNavigate(ROUTES_PATH.Bills)
+    
+    //   const billsTest = new Bills({ document, onNavigate, store: mockedBills, localStorage: window.localStorage })
+    //   const consoleLog = jest.spyOn(console, 'log')
+    //   const data = await billsTest.getBills()
+    // await new Promise(process.nextTick);
 
     //   document.body.innerHTML = BillsUI({ data: bills})
 
@@ -185,7 +219,7 @@ describe("When an error occurs on API", () => {
 
     test('if corrupted data was introduced, should log the error}', async () => {
 
-      const corruptedStore = {
+      const storeTest = {
         bills() {
           return {
             list() {
@@ -208,7 +242,7 @@ describe("When an error occurs on API", () => {
           }
         }
       }
-      const billsTest = new Bills({ document, onNavigate, store: corruptedStore, localStorage: window.localStorage })
+      const billsTest = new Bills({ document, onNavigate, store: storeTest, localStorage: window.localStorage })
       const consoleLog = jest.spyOn(console, 'log')
       const data = await billsTest.getBills()
       expect(consoleLog).toHaveBeenCalled()     
