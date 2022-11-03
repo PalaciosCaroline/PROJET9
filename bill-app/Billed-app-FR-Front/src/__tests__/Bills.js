@@ -150,7 +150,7 @@ describe("Given I am a user connected as Employe", () => {
         )
         window.localStorage.setItem('user', JSON.stringify({
           type: 'Employee',
-          email: "employee@test.tld"
+          email: "a@a"
         }))
         const root = document.createElement("div")
         root.setAttribute("id", "root")
@@ -176,7 +176,7 @@ describe("When an error occurs on API", () => {
     )
     window.localStorage.setItem('user', JSON.stringify({
       type: 'Employee',
-      email: "employee@test.tld"
+      email: "a@a"
     }))
     const root = document.createElement("div")
     root.setAttribute("id", "root")

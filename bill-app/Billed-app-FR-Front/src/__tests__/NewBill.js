@@ -50,7 +50,7 @@ describe("Given I am connected as an employee", () => {
         "user",
         JSON.stringify({
           type: "Employee",
-          email: "employee@test.tld",
+          email: "a@a",
         })
       );
       const root = document.createElement("div");
