@@ -12,19 +12,18 @@ import {
   getByTestId,
   getByLabelText,
   fireEvent,
+  waitFor
 } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 
 import { bills } from "../fixtures/bills.js";
-import { ROUTES_PATH } from "../constants/routes.js";
+import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
-import { mockedBills} from "../__mocks__/store";
+// import { mockedBills} from "../__mocks__/store";
 import mockStore from "../__mocks__/store";
 import { log } from "console";
 import router from "../app/Router.js";
-
 import { fn } from "jquery";
-
 
 jest.mock("../app/store", () => mockStore)
 
@@ -34,13 +33,11 @@ describe("Given I am connected as an employee", () => {
       const html = NewBillUI()
       document.body.innerHTML = html
       //to-do write assertion
-    
       const formNewBill = screen.getByTestId("form-new-bill");
       expect(formNewBill).toBeTruthy();
     })
   })
 })
-
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {

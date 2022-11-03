@@ -8,14 +8,14 @@
 
 import {screen, waitFor} from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
-import Bills from "../containers/Bills"
+import BillsContainer from "../containers/Bills"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
 
 import router from "../app/Router.js";
 import mockedBills from "../__mocks__/store"
-import mockStore from "../__mocks__/store"
+// import mockStore from "../__mocks__/store"
 import { log } from 'console'
 
 import NewBill from '../containers/NewBill.js'
@@ -88,7 +88,7 @@ describe('Given I am connected as Employe and I am on bills page', () => {
       const modalFile = document.getElementById('modaleFile')
       // const modaleFileEmploye = screen.getByTestId("modaleFileEmploye")
       $.fn.modal = jest.fn(() => modaleFile.classList.add("show"))
-      const handleClickIconEye = jest.fn(Bills.handleClickIconEye);
+      const handleClickIconEye = jest.fn(BillsContainer.handleClickIconEye);
       iconEye.forEach(icon => {
         icon.addEventListener('click', handleClickIconEye)
         userEvent.click(icon);
@@ -107,7 +107,7 @@ describe('Given I am connected as Employe and I am on bills page', () => {
       document.body.innerHTML = BillsUI({ data: bills })
       const iconEye = screen.getAllByTestId('icon-eye')[0]
       const fileUrl = "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a"
-      const handleClickIconEye = jest.fn(Bills.handleClickIconEye);
+      const handleClickIconEye = jest.fn(BillsContainer.handleClickIconEye);
       iconEye.addEventListener('click', handleClickIconEye)
       fireEvent.click(iconEye);
       expect(iconEye.dataset.billUrl).toEqual(fileUrl)
@@ -126,8 +126,8 @@ describe("Given I am a user connected as Employe", () => {
       document.body.append(root)
       router()
       window.onNavigate(ROUTES_PATH.Bills)
-      const bills = new Bills({ document, onNavigate, store: mockedBills, localStorage: window.localStorage })
-      const  handleClickNewBill = jest.fn(Bills.handleClickNewBill);
+      const bills = new BillsContainer({ document, onNavigate, store: mockedBills, localStorage: window.localStorage })
+      const  handleClickNewBill = jest.fn(BillsContainer.handleClickNewBill);
       await waitFor(() => screen.getByTestId("Mes-notes-de-frais"))
       const btnNewBill  = await screen.getByTestId("btn-new-bill")
       expect(btnNewBill).toBeTruthy()
@@ -157,30 +157,12 @@ describe("Given I am a user connected as Employe", () => {
         document.body.appendChild(root)
         router()
       })
-      const billsTest = new Bills({ document, onNavigate, store: mockedBills, localStorage: window.localStorage })
- 
+      const billsTest = new BillsContainer({ document, onNavigate, store: mockedBills, localStorage: window.localStorage })
+      document.body.innerHTML = BillsUI({ data: bills})
       const data = await billsTest.getBills()
+      await new Promise(process.nextTick);
       expect(data.length).toBe(4)
     })
-
-
-    //  test("fetches bills from mock API GET", async () => {
-    //   localStorage.setItem("user", JSON.stringify({ type: 'Employee', email: "employee@test.tld" }));
-    //   const root = document.createElement("div")
-    //   root.setAttribute("id", "root")
-    //   document.body.append(root)
-    //   router()
-    //   window.onNavigate(ROUTES_PATH.Bills)
-    
-    //   const billsTest = new Bills({ document, onNavigate, store: mockedBills, localStorage: window.localStorage })
-    //   const consoleLog = jest.spyOn(console, 'log')
-    //   const data = await billsTest.getBills()
-    // await new Promise(process.nextTick);
-
-    //   document.body.innerHTML = BillsUI({ data: bills})
-
-    //  expect(bills.data.length).toBe(4);
-    // })
   })
 })
 
@@ -242,7 +224,7 @@ describe("When an error occurs on API", () => {
           }
         }
       }
-      const billsTest = new Bills({ document, onNavigate, store: storeTest, localStorage: window.localStorage })
+      const billsTest = new BillsContainer({ document, onNavigate, store: storeTest, localStorage: window.localStorage })
       const consoleLog = jest.spyOn(console, 'log')
       const data = await billsTest.getBills()
       expect(consoleLog).toHaveBeenCalled()     
