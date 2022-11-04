@@ -109,10 +109,12 @@ describe("Given I am connected as an employee", () => {
       jest.spyOn(window, "alert").mockImplementation(() => {});
       expect(handleChangeFile).toHaveBeenCalledTimes(1);
       expect(window.alert).not.toBeCalled();
+      
       //create bills à vérifier
-      const billsSpy = jest.spyOn(mockStore, "bills");
+      const billsSpy = await jest.spyOn(mockStore, "bills");
 
-      // await expect(bills.fileUrl).toBe('https://localhost:3456/images/test.jpg')
+      // je n'arrive pas à atteindre mockStore.create
+      // expect(bill.fileUrl).toBe('https://localhost:3456/images/test.jpg')
     })
 
     test("Then I upload a new file with a wrong format, a new file is not upload", async () => {
