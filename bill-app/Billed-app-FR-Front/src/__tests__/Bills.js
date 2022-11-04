@@ -140,9 +140,9 @@ describe("Given I am a user connected as Employe", () => {
       expect(handleClickNewBill).toHaveBeenCalled()
     })
 
-    test("fetches bills from mock API POST", async () => {
+    test("fetches bills from mock API POST, receive all data", async () => {
       beforeEach(() => {
-        jest.spyOn(mockedBills, "bills")
+        // jest.spyOn(mockedBills, "bills")
         Object.defineProperty(
             window,
             'localStorage',
@@ -157,10 +157,19 @@ describe("Given I am a user connected as Employe", () => {
         document.body.appendChild(root)
         router()
       })
+      window.onNavigate(ROUTES_PATH.Bills)
+
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
       const billsTest = new BillsContainer({ document, onNavigate, store: mockedBills, localStorage: window.localStorage })
       document.body.innerHTML = BillsUI({ data: bills})
+      const billsSpy = jest.spyOn(mockedBills, "bills");
+      const dataSpy = jest.spyOn(billsTest, "getBills");
       const data = await billsTest.getBills()
       await new Promise(process.nextTick);
+      expect(billsSpy).toHaveBeenCalledTimes(1);
+      expect(dataSpy).toHaveBeenCalledTimes(1);
       expect(data.length).toBe(4)
     })
   })
@@ -229,7 +238,6 @@ describe("When an error occurs on API", () => {
       const data = await billsTest.getBills()
       expect(consoleLog).toHaveBeenCalled()     
     })
-  
 
   test("fetches bills from an API and fails with 404 message error", async () => {
     mockedBills.bills.mockImplementationOnce(() => {
@@ -283,8 +291,8 @@ describe('Given I am connected as Employe and I am on bills page', () => {
       userEvent.click(btnNewBill);
       expect(handleClickNewBill).toHaveBeenCalled();
       expect(handleClickNewBill).toBeDefined();
-      const modal = screen.getByTestId('modaleFileEmploye');
-      expect(modal).toBeTruthy();
+      const modaleFileEmploye = screen.getByTestId('modaleFileEmploye');
+      expect(modaleFileEmploye).toBeTruthy();
       // expect(modal).toHaveClass('show');
     })
   })

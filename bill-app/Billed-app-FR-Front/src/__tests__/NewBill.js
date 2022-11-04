@@ -41,7 +41,32 @@ describe("Given I am connected as an employee", () => {
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
+    const html = NewBillUI()
+      document.body.innerHTML = html
+
+    test("should require the input type date", () => {
+      const inputDate = screen.getByTestId("datepicker");
+      expect(inputDate).toBeRequired();
+    })
+    test("should require the input type number amount", () => {
+      const inputAmount = screen.getByTestId("amount");
+      expect(inputAmount).toBeRequired();
+    })
+    test("should require the input type number pct", () => {
+      const inputPct = screen.getByTestId("pct");
+      expect(inputPct).toBeRequired();
+    })
+    test("should require the input type file", () => {
+      const inputfile = screen.getByTestId("file");
+      expect(inputfile).toBeRequired();
+    })
+  })
+})
+
+describe("Given I am connected as an employee", () => {
+  describe("When I am on NewBill Page", () => {
     beforeEach(() => {
+      // jest.spyOn(mockStore, "bills")
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
@@ -82,10 +107,12 @@ describe("Given I am connected as an employee", () => {
       expect(newBillFile.files[0].name).toBeDefined();
       expect(newBillFile.files[0].name).toBe("image.png");
       jest.spyOn(window, "alert").mockImplementation(() => {});
+      expect(handleChangeFile).toHaveBeenCalledTimes(1);
       expect(window.alert).not.toBeCalled();
       //create bills à vérifier
-      await new Promise(process.nextTick);
+      const billsSpy = jest.spyOn(mockStore, "bills");
 
+      // await expect(bills.fileUrl).toBe('https://localhost:3456/images/test.jpg')
     })
 
     test("Then I upload a new file with a wrong format, a new file is not upload", async () => {
