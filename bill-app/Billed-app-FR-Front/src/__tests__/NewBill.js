@@ -77,6 +77,25 @@ describe("Given I am connected as an employee", () => {
       const inputfile = screen.getByTestId("file");
       expect(inputfile).toBeRequired();
     })
+
+    test("Then bill icon in vertical layout should be highlighted", async () => {
+
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee'
+      }))
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+      window.onNavigate(ROUTES_PATH.NewBill)
+      await waitFor(() => screen.getByTestId('icon-window'))
+      await waitFor(() => screen.getByTestId('icon-mail'))
+      const windowIcon = screen.getByTestId('icon-window')
+      const mailIcon = screen.getByTestId('icon-mail')
+      expect(windowIcon).not.toHaveClass('active-icon');
+      expect(mailIcon).toHaveClass('active-icon');
+    })
   })
 })
 

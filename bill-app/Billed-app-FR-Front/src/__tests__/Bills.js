@@ -80,7 +80,7 @@ describe("Given I am connected as an employee", () => {
 //à revoir
 describe('Given I am connected as Employe and I am on bills page', () => {
   describe('When I click on the icon eye', () => {
-    test('A modal should open with a bill view', () => {
+    test('A modal should open with a bill view',async () => {
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -97,7 +97,9 @@ describe('Given I am connected as Employe and I am on bills page', () => {
       document.body.innerHTML = BillsUI({ data: bills })
       const iconEye = screen.getAllByTestId("icon-eye");
       const modalFile = document.getElementById('modaleFile')
+      
       // const modaleFileEmploye = screen.getByTestId("modaleFileEmploye")
+      // $.fn.modal = jest.fn()
       $.fn.modal = jest.fn(() => modaleFile.classList.add("show"))
       const handleClickIconEye = jest.fn(BillsContainer.handleClickIconEye);
       iconEye.forEach(icon => {
@@ -110,6 +112,13 @@ describe('Given I am connected as Employe and I am on bills page', () => {
       fireEvent.click(iconEye[0]);
       expect(handleClickIconEye).toHaveBeenCalled()
       expect(modaleFile).toBeTruthy();
+
+      // await waitFor(() => screen.getByTestId('imageModal'))
+     
+      // const imgModal = screen.getByTestId('imageModal')
+    
+      // const imgModal = await screen.getByTestId('imageModal')
+      // expect(imgModal).toBeTruthy();
       //expect(modaleFile).toHaveClass('show');
   
     })
@@ -130,27 +139,6 @@ describe('Given I am connected as Employe and I am on bills page', () => {
 // test d'intégration GET
 describe("Given I am a user connected as Employe", () => {
   describe("When I navigate to Bills", () => {
-    test("fetches bills from mock API GET", async () => {
-      localStorage.setItem("user", JSON.stringify({ type: 'Employee', email: "employee@test.tld" }));
-      const root = document.createElement("div")
-      root.setAttribute("id", "root")
-      document.body.append(root)
-      router()
-      window.onNavigate(ROUTES_PATH.Bills)
-      const bills = new BillsContainer({ document, onNavigate, store: mockedBills, localStorage: window.localStorage })
-      const  handleClickNewBill = jest.fn(bills.handleClickNewBill);
-      await waitFor(() => screen.getByTestId("Mes-notes-de-frais"))
-      const btnNewBill  = await screen.getByTestId("btn-new-bill")
-      expect(btnNewBill).toBeTruthy()
-      const contentBills  = await screen.getByTestId("tbody")
-      expect(contentBills).toBeTruthy()
-
-      btnNewBill.addEventListener('click', handleClickNewBill)
-      userEvent.click(btnNewBill);
-      // fireEvent.click(btnNewBill);
-      expect(handleClickNewBill).toHaveBeenCalled()
-    })
-
     test("fetches bills from mock API POST, receive all data", async () => {
       beforeEach(() => {
         // jest.spyOn(mockedBills, "bills")
@@ -279,6 +267,24 @@ describe("When an error occurs on API", () => {
 
 describe('Given I am connected as Employe and I am on bills page', () => {
   describe('When I click on the button btn-new-bill', () => {
+    test("handleClickNewBill is called", async () => {
+      localStorage.setItem("user", JSON.stringify({ type: 'Employee', email: "employee@test.tld" }));
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+      window.onNavigate(ROUTES_PATH.Bills)
+      const bills = new BillsContainer({ document, onNavigate, store: mockedBills, localStorage: window.localStorage })
+      document.body.innerHTML = BillsUI({ data: bills })
+     
+      const handleClickNewBill = jest.fn(BillsUI.handleClickNewBill);
+      const btnNewBill = screen.getByTestId('btn-new-bill');
+      expect(btnNewBill).toBeTruthy()
+      btnNewBill.addEventListener('click', handleClickNewBill)
+      fireEvent.click(btnNewBill);
+      expect(handleClickNewBill).toHaveBeenCalled()
+    })
+
     test('Change the Navigate', () => {
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
