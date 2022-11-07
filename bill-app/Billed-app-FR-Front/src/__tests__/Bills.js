@@ -36,6 +36,17 @@ describe('When I am on Bills page but back-end send an error message', () => {
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
+
+    test("display Bills page", async () => {
+      document.body.innerHTML = BillsUI({ data: bills })
+      const mesNotesDeFrais  = screen.getByTestId("Mes-notes-de-frais")
+      expect(mesNotesDeFrais).toBeTruthy()
+      const btnNewBill  = screen.getByTestId("btn-new-bill")
+      expect(btnNewBill).toBeTruthy()
+      const contentBills  = screen.getByTestId("tbody")
+      expect(contentBills).toBeTruthy()
+    })
+    
     test("Then bill icon in vertical layout should be highlighted", async () => {
 
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
@@ -127,7 +138,7 @@ describe("Given I am a user connected as Employe", () => {
       router()
       window.onNavigate(ROUTES_PATH.Bills)
       const bills = new BillsContainer({ document, onNavigate, store: mockedBills, localStorage: window.localStorage })
-      const  handleClickNewBill = jest.fn(BillsContainer.handleClickNewBill);
+      const  handleClickNewBill = jest.fn(bills.handleClickNewBill);
       await waitFor(() => screen.getByTestId("Mes-notes-de-frais"))
       const btnNewBill  = await screen.getByTestId("btn-new-bill")
       expect(btnNewBill).toBeTruthy()

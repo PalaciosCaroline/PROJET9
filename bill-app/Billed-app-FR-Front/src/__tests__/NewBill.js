@@ -19,7 +19,6 @@ import userEvent from "@testing-library/user-event";
 import { bills } from "../fixtures/bills.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
-// import { mockedBills} from "../__mocks__/store";
 import mockStore from "../__mocks__/store";
 import { log } from "console";
 import router from "../app/Router.js";
@@ -36,6 +35,20 @@ describe("Given I am connected as an employee", () => {
       const formNewBill = screen.getByTestId("form-new-bill");
       expect(formNewBill).toBeTruthy();
     })
+
+    test(('Then, it should them in the page'), () => {
+      const html = NewBillUI()
+      document.body.innerHTML = html
+      expect(screen.getByTestId('expense-type')).toBeTruthy()
+      expect(screen.getByTestId('expense-name')).toBeTruthy()
+      expect(screen.getByTestId('datepicker')).toBeTruthy()
+      expect(screen.getByTestId('amount')).toBeTruthy()
+      expect(screen.getByTestId('vat')).toBeTruthy()
+      expect(screen.getByTestId('pct')).toBeTruthy()
+      expect(screen.getByTestId('commentary')).toBeTruthy()
+      expect(screen.getByTestId('file')).toBeTruthy()
+      expect(document.querySelector('#btn-send-bill')).toBeTruthy();
+    })
   })
 })
 
@@ -44,6 +57,10 @@ describe("Given I am connected as an employee", () => {
     const html = NewBillUI()
       document.body.innerHTML = html
 
+    test("should require the select type expense", () => {
+      const selectType = screen.getByTestId("expense-type");
+      expect(selectType).toBeRequired();
+    })
     test("should require the input type date", () => {
       const inputDate = screen.getByTestId("datepicker");
       expect(inputDate).toBeRequired();
@@ -91,6 +108,10 @@ describe("Given I am connected as an employee", () => {
       window.onNavigate(ROUTES_PATH.NewBill);
       const html = NewBillUI();
       document.body.innerHTML = html;
+      // const mockStore = jest.fn();
+
+      const billsSpy = jest.spyOn(mockStore, "bills");
+
       const newBilltest = new NewBill({
         document,
         onNavigate,
@@ -111,10 +132,20 @@ describe("Given I am connected as an employee", () => {
       expect(window.alert).not.toBeCalled();
       
       //create bills à vérifier
-      const billsSpy = await jest.spyOn(mockStore, "bills");
-
+      // const billsSpy = await jest.spyOn(mockStore, "bills");
+    
+      // newBilltest.mockStore = jest.fn().mockResolvedValue({});
+      // jest.spyOn(mockStore, "bills")
+      // mockStore.bills.mockImplementationOnce(() => {
+      //   return {
+      //     create : () =>  {
+      //       return Promise.resolve({fileUrl: 'https://localhost:3456/images/test.jpg', key: '1234'})
+      //     }
+      //   }})
+   
       // je n'arrive pas à atteindre mockStore.create
-      // expect(bill.fileUrl).toBe('https://localhost:3456/images/test.jpg')
+        
+      
     })
 
     test("Then I upload a new file with a wrong format, a new file is not upload", async () => {
@@ -167,6 +198,7 @@ describe("I submit a valid bill form", () => {
      })          
  
     const submit = screen.queryByTestId('form-new-bill')
+    const btnSubmit = submit.querySelector('#btn-send-bill')
 
     const newBillTest = {
       name: "newBillTestName",
@@ -205,11 +237,9 @@ describe("I submit a valid bill form", () => {
     const handleSubmit = jest.spyOn(newBill, 'handleSubmit')
     const updateBill = jest.spyOn(newBill, 'updateBill')
    
-    submit.addEventListener('click', (e) => handleSubmit(e))
-    fireEvent.click(submit)
-
+    submit.addEventListener('submit', (e) => handleSubmit(e))
+    userEvent.click(btnSubmit)
     expect(handleSubmit).toHaveBeenCalled()
     expect(updateBill).toHaveBeenCalled()
   })
 })
-
