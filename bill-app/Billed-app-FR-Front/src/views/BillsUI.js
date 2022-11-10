@@ -10,7 +10,7 @@ const row = (bill) => {
       <td>${bill.type}</td>
       <td>${bill.name}</td>
       
-      <td data-testid="formatDate">${bill.date}</td>
+      <td data-testid="formatDate">${bill.formatedDate ? bill.formatedDate : bill.date}</td>
       <td>${bill.amount} €</td>
       <td>${bill.status}</td>
       <td>

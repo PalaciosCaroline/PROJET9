@@ -5,7 +5,6 @@
 import { screen } from "@testing-library/dom"
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
-
 import "@testing-library/jest-dom";
 import {
   getByRole,
@@ -25,9 +24,21 @@ import router from "../app/Router.js";
 import { fn } from "jquery";
 
 jest.mock("../app/store", () => mockStore)
+global.console = {
+  log: jest.fn(),
+  info: jest.fn(),
+  error: jest.fn()
+}
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
+    test("Then The Title is display", () => {
+      const html = NewBillUI()
+      document.body.innerHTML = html
+      //to-do write assertion
+      expect(screen.getByText("Envoyer une note de frais")).toBeTruthy();
+    })
+
     test("Then New Bill form should display", () => {
       const html = NewBillUI()
       document.body.innerHTML = html
@@ -121,27 +132,35 @@ describe("Given I am connected as an employee", () => {
     });
 
     test("Then I upload a new file with a good format, a new file is upload", async () => {
+     
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
       };
       window.onNavigate(ROUTES_PATH.NewBill);
       const html = NewBillUI();
       document.body.innerHTML = html;
-      // const mockStore = jest.fn();
-
-      const billsSpy = jest.spyOn(mockStore, "bills");
+      // const console = jest.fn(() => log = '1234');
+      // const billsSpy = jest.spyOn(mockStore, "bills");
 
       const newBilltest = new NewBill({
         document,
         onNavigate,
         store: mockStore,
         localStorage: window.localStorage,
+        
       });
+      const billsSpy = jest.spyOn(mockStore.bills(), "create");  
+      // newBilltest.mockStore = jest.fn().mockResolvedValue({});
+      console.log = jest.fn()
+      console.log('1234');
+      // jest.spyOn(console, "log").mockImplementation(() => {});
       const handleChangeFile = jest.fn((e) => newBilltest.handleChangeFile(e));
+
+      
       const file = new File(["FileImage"], "image.png", { type: "image/png" });
       const newBillFile = screen.getByTestId("file");
-
-      newBillFile.addEventListener("change", handleChangeFile);
+      // jest.spyOn(console, "log").mockImplementation(() => {});
+      newBillFile.addEventListener("change", (e) => handleChangeFile(e));
       userEvent.upload(newBillFile, file);
       const newBillFileName = screen.getByTestId("expense-name");
       expect(newBillFile.files[0].name).toBeDefined();
@@ -149,22 +168,25 @@ describe("Given I am connected as an employee", () => {
       jest.spyOn(window, "alert").mockImplementation(() => {});
       expect(handleChangeFile).toHaveBeenCalledTimes(1);
       expect(window.alert).not.toBeCalled();
-      
+      // await expect(billsSpy).toHaveBeenCalled();
+      expect(newBillFile.value).not.toBeNull
       //create bills à vérifier
-      // const billsSpy = await jest.spyOn(mockStore, "bills");
-    
-      // newBilltest.mockStore = jest.fn().mockResolvedValue({});
-      // jest.spyOn(mockStore, "bills")
-      // mockStore.bills.mockImplementationOnce(() => {
-      //   return {
-      //     create : () =>  {
-      //       return Promise.resolve({fileUrl: 'https://localhost:3456/images/test.jpg', key: '1234'})
-      //     }
-      //   }})
-   
-      // je n'arrive pas à atteindre mockStore.create
-        
+      // const data = await mockStore.bills().create()
+     
       
+      // jest.spyOn(mockStore , 'bills').mockImplementation(() => {
+      //   return {
+      //       create: () => {
+      //           return Promise.resolve({"fileUrl": "https://localhost:3456/images/test.jpg", "key": "1234"})
+      //       },
+      //   }
+      // })
+      // expect(mockStore.bills).toHaveBeenCalled();
+      // expect(billsSpy).toHaveBeenCalled();
+      // expect(data).toStrictEqual({"fileUrl": "https://localhost:3456/images/test.jpg", "key": "1234"});
+      // await expect(console.log).toHaveBeenLastCalledWith('1234')
+      expect(screen.getByText("Envoyer une note de frais")).toBeTruthy();
+     
     })
 
     test("Then I upload a new file with a wrong format, a new file is not upload", async () => {
@@ -185,14 +207,13 @@ describe("Given I am connected as an employee", () => {
         type: "image/pdf",
       });
       const newBillFile = screen.getByTestId("file");
-
       jest.spyOn(window, "alert").mockImplementation(() => {});
-
       newBillFile.addEventListener("change", handleChangeFile);
       userEvent.upload(newBillFile, fileTest);
       expect(handleChangeFile).toHaveBeenCalled()
       expect(newBillFile.files[0].name).toBeDefined();
       expect(window.alert).toBeCalledWith('Seulement les formats de fichiers jpg/jpeg et png sont autorisés!');
+      expect(newBillFile.value).toBeNull
     })
   })
 })
