@@ -19,7 +19,7 @@ import mockedBills from "../__mocks__/store"
 import { log } from 'console'
 
 import NewBill from '../containers/NewBill.js'
-//jest.mock("../app/store", () => mockStore)
+// jest.mock("../app/store", () => mockedBills)
 
 describe('When I am on Bills page but it is loading', () => {
   test('Then, Loading page should be rendered', () => {
@@ -68,7 +68,8 @@ describe("Given I am connected as an employee", () => {
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills })
       const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
-      const antiChrono = (a, b) => ((a < b) ? 1 : -1)
+      const antiChrono = (a, b) =>  {if (a !== null && b !== null) {
+       (a < b) ? 1 : -1}}
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
     })
@@ -101,20 +102,8 @@ describe('Given I am connected as Employe and I am on bills page', () => {
         icon.addEventListener('click', handleClickIconEye)
         userEvent.click(icon);
       })
-      expect(handleClickIconEye).toHaveBeenCalledTimes(iconEye.length);
+      expect(handleClickIconEye).toHaveBeenCalledTimes(iconEye.length)
 
-      iconEye[0].addEventListener('click', handleClickIconEye)
-      fireEvent.click(iconEye[0]);
-      expect(handleClickIconEye).toHaveBeenCalled()
-      expect(modalFile).toBeTruthy();
-      // await waitFor(() => screen.getByTestId('imageModal'))
-     
-      // const imgModal = screen.getByTestId('imageModal')
-    
-      // const imgModal = await screen.getByTestId('imageModal')
-      // expect(imgModal).toBeTruthy();
-      //expect(modaleFile).toHaveClass('show');
-  
     })
 
     test("a modal show for each icon", () => {

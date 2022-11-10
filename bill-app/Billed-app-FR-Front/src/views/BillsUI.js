@@ -5,26 +5,24 @@ import LoadingPage from "./LoadingPage.js"
 import Actions from './Actions.js'
 
 const row = (bill) => {
-  return (`
-    <tr>
-      <td>${bill.type}</td>
-      <td>${bill.name}</td>
-      
-      <td data-testid="formatDate">${bill.formatedDate ? bill.formatedDate : bill.date}</td>
-      <td>${bill.amount} €</td>
-      <td>${bill.status}</td>
-      <td>
-        ${Actions(bill.fileUrl)}
-      </td>
-    </tr>
-    `)
+  //acceptation des seuls newBill avec form complété
+  if(bill.type != null){
+    return (`
+      <tr>
+        <td>${bill.type}</td>
+        <td>${bill.name}</td>
+        <td data-testid="formatDate">${bill.formatedDate ? bill.formatedDate : bill.date}</td>
+        <td>${bill.amount} €</td>
+        <td>${bill.status}</td>
+        <td>
+          ${Actions(bill.fileUrl)}
+        </td>
+      </tr>
+      `)
+    }
   }
 
-// <td data-testid="formatDate">${bill.formatedDate ? bill.formatedDate : bill.date}</td>
-
-  // const rows = (data) => {
-  //   return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
-  // }
+  
 
   // const rows = (data) => {
   //   let sorted = data?.length > 0 ? [...data] : []
@@ -35,7 +33,14 @@ const row = (bill) => {
 
   const rows = (data) => {
     return (data && data.length) ? data
-        .sort((a, b) => (new Date(a.date) > new Date(b.date) ? -1 : new Date(a.date) < new Date(b.date) ? 1 : 0))
+        .sort((a, b) => {
+        //   if (a.date === null) {
+        //   return -1;
+        //   } if (b.date === null) {
+        //   return 1;
+        // } else 
+        (new Date(a.date) > new Date(b.date) ? -1 : new Date(a.date) < new Date(b.date) ? 1 : 0)
+        })
         .map(bill => row(bill)).join("") : ""
   }
 
