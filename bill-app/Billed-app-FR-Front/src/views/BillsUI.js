@@ -5,7 +5,7 @@ import LoadingPage from "./LoadingPage.js"
 import Actions from './Actions.js'
 
 const row = (bill) => {
-  //acceptation des seuls newBill avec form complété
+  //acceptation des seuls newBill avec form complété en plus du fichier
   if(bill.type != null){
     return (`
       <tr>

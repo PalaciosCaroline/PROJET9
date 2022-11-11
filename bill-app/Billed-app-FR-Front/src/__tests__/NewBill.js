@@ -137,8 +137,8 @@ describe("Given I am connected as an employee", () => {
       
         // jest.spyOn(mockStore, "bills")
         // jest.mock("../app/store");
-        mockStore.bills().create = jest.fn().mockResolvedValue() 
-      
+        // mockStore.bills().create = jest.fn().mockResolvedValue() 
+        
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
       };
@@ -156,8 +156,17 @@ describe("Given I am connected as an employee", () => {
         localStorage: window.localStorage,
         
       });
-      // const billsSpy = jest.spyOn(mockStore.bills(), "create");  
-      // newBilltest.mockStore = jest.fn().mockResolvedValue({});
+
+      // jest.spyOn(mockStore , 'bills').mockImplementation(() => {
+      //   return {
+      //       create: () => {
+      //           return Promise.resolve({"fileUrl": "https://localhost:3456/images/test.jpg", "key": "1234"})
+      //       },
+      //   }
+      // })
+
+      const billsSpy = jest.spyOn(mockStore.bills(), "create");  
+      newBilltest.mockStore = jest.fn().mockResolvedValue({});
       console.log = jest.fn()
       // console.log('1234');
       // jest.spyOn(console, "log").mockImplementation(() => {});
@@ -166,27 +175,23 @@ describe("Given I am connected as an employee", () => {
       
       const file = new File(["FileImage"], "image.png", { type: "image/png" });
       const newBillFile = screen.getByTestId("file");
+
+      expect(newBillFile.files).toHaveLength(0)
       newBillFile.addEventListener("change", (e) => handleChangeFile(e));
-      userEvent.upload(newBillFile, file);
-      const newBillFileName = screen.getByTestId("expense-name");
-      expect(newBillFile.files[0].name).toBeDefined();
+      // fireEvent.change(newBillFile, { target: { value: "image.png" } });
+      
+      userEvent.upload(newBillFile, file)
+      expect(newBillFile.files[0]).toStrictEqual(file)
+      expect(newBillFile.files.item(0)).toStrictEqual(file)
+      expect(newBillFile.files).toHaveLength(1)
       expect(newBillFile.files[0].name).toBe("image.png");
       jest.spyOn(window, "alert").mockImplementation(() => {});
       expect(handleChangeFile).toHaveBeenCalledTimes(1);
       expect(window.alert).not.toBeCalled();
-      // await expect(billsSpy).toHaveBeenCalled();
       expect(newBillFile.value).not.toBeNull
       //create bills à vérifier
-    
-      // jest.spyOn(mockStore , 'bills').mockImplementation(() => {
-      //   return {
-      //       create: () => {
-      //           return Promise.resolve({"fileUrl": "https://localhost:3456/images/test.jpg", "key": "1234"})
-      //       },
-      //   }
-      // })
    
-      // expect(billsSpy).toHaveBeenCalled();
+      
       await expect(console.log).toHaveBeenCalledTimes(2)
       expect(screen.getByText("Envoyer une note de frais")).toBeTruthy();
      
@@ -329,3 +334,4 @@ test('Then it adds bill to the API and fails with 404 message error', async () =
     expect(message).toBeTruthy();
   })
 })
+
