@@ -59,7 +59,7 @@ export default class NewBill {
     formData.append('email', email)
     const regex = /.(jpg|jpeg|png)$/i;
       // console.log(extFile)
-    if (!regex.test(fileName)){
+    if (!regex.test(file.name)){
       e.target.value = '';
         alert("Seulement les formats de fichiers jpg/jpeg et png sont autorisés!");
         return false;

@@ -135,7 +135,7 @@ describe("Given I am connected as an employee", () => {
 
     test("Then I upload a new file with a good format, a new file is upload", async () => {
       
-        jest.spyOn(mockStore, "bills")
+      jest.spyOn(mockStore, "bills")
       
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
@@ -144,49 +144,76 @@ describe("Given I am connected as an employee", () => {
       const html = NewBillUI();
       document.body.innerHTML = html;
       
-      // const console = jest.fn(() => log = '1234');
-      // const billsSpy = jest.spyOn(mockStore, "bills");
-
       const newBilltest = new NewBill({
         document,
         onNavigate,
         store: mockStore,
         localStorage: window.localStorage,
-        
       });
 
-
+      jest.spyOn(window, "alert").mockImplementation(() => {});
       const billsSpy = jest.spyOn(mockStore.bills(), "create");  
       newBilltest.mockStore = jest.fn().mockResolvedValue({});
       newBilltest.billsSpy = jest.fn().mockResolvedValue({});
       console.log = jest.fn()
-      // console.log('1234');
-      // jest.spyOn(console, "log").mockImplementation(() => {});
       const handleChangeFile = jest.fn((e) => newBilltest.handleChangeFile(e));
 
-      
       const file = new File(["FileImage"], "image.png", { type: "image/png" });
       const newBillFile = screen.getByTestId("file");
-      const regex = /.(jpg|jpeg|png)$/i;
       expect(newBillFile.files).toHaveLength(0)
       newBillFile.addEventListener("change", (e) => handleChangeFile(e));
       // fireEvent.change(newBillFile, { target: { files: [file] } });
       userEvent.upload(newBillFile, file)
-      // expect(regex.test(newBillFile.files[0])).toBe(true)
-      // expect(regex.test(newBillFile.fileName)).toBe(true)
       expect(newBillFile.files[0]).toStrictEqual(file)
-      // expect(newBillFile.files.item(0)).toStrictEqual(file)
       expect(newBillFile.files).toHaveLength(1)
       expect(newBillFile.files[0].name).toBe("image.png");
-      jest.spyOn(window, "alert").mockImplementation(() => {});
+    
       expect(handleChangeFile).toHaveBeenCalledTimes(1);
       expect(window.alert).not.toBeCalled();
       expect(newBillFile.value).not.toBeNull 
-      // expect(billsSpy).toBeCalled()
-      //create bills à vérifier
-   
       expect(mockStore.bills).toHaveBeenCalled();
+    })
+
+    test("Then I upload a new file with a good format, but there is fails with 404 message error when a new file is upload", async () => {
+      
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      window.onNavigate(ROUTES_PATH.NewBill);
+      const html = NewBillUI();
+      document.body.innerHTML = html;
+      
+      const newBilltest = new NewBill({
+        document,
+        onNavigate,
+        store: mockStore,
+        localStorage: window.localStorage,
+      });
+
+      jest.spyOn(window, "alert").mockImplementation(() => {});
+      const billsSpy = jest.spyOn(mockStore.bills(), "create");  
      
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          create: () => {
+            return Promise.reject(new Error("Erreur 404"))
+          }
+        }
+      })
+      const handleChangeFile = jest.fn((e) => newBilltest.handleChangeFile(e));
+
+      const file = new File(["FileImage"], "image.png", { type: "image/png" });
+      const newBillFile = screen.getByTestId("file");
+      expect(newBillFile.files).toHaveLength(0)
+      newBillFile.addEventListener("change", (e) => handleChangeFile(e));
+      userEvent.upload(newBillFile, file)
+      expect(newBillFile.files[0]).toStrictEqual(file)
+      expect(handleChangeFile).toHaveBeenCalledTimes(1);
+      expect(window.alert).not.toBeCalled();
+      expect(billsSpy).toHaveBeenCalled();
+
+      await waitFor(() => new Promise(process.nextTick));
+      expect(console.error).toHaveBeenCalled();
     })
 
     test("Then I upload a new file with a wrong format, a new file is not upload", async () => {
@@ -217,17 +244,6 @@ describe("Given I am connected as an employee", () => {
     })
   })
 })
-
-
-// describe('Given I am connected as an employee', () => {
-//   describe('When I create a new bill', () => {
-//       it.todo('Add bill to mock API POST', async () => {
-         //  méthode post
-
-         //  expect(bills.data.length).toBe(?);
-//       });
-//     })
-//   })
 
 describe("I submit a valid bill form", () => {
   test('then a bill is created', async () => {
@@ -275,7 +291,7 @@ describe("I submit a valid bill form", () => {
   })
 })
 
-//Test POST
+//Test POST with error
 describe("When an error occurs on API", () => {
   beforeEach(() => {
     jest.spyOn(mockStore, "bills")
@@ -354,3 +370,4 @@ describe("When an error occurs on API", () => {
     expect(console.error).toHaveBeenCalled();
   })
 })
+

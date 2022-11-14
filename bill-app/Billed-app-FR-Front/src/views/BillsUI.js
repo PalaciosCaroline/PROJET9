@@ -11,7 +11,7 @@ const row = (bill) => {
       <tr>
         <td data-testid="billType">${bill.type}</td>
         <td>${bill.name}</td>
-        <td data-testid="formatDate">${bill.date}</td>
+        <td data-testid="formatDate">${bill.formatedDate ?? bill.date}</td>
         <td>${bill.amount} €</td>
         <td>${bill.status}</td>
         <td>
@@ -23,15 +23,9 @@ const row = (bill) => {
   }
 
   const rows = (data) => {
+    const antiChrono = (a, b) => (a.date < b.date) ? 1 : -1;
     return (data && data.length) ? data
-        // .sort((a, b) => {
-        //    if (a.date === null) {
-        //    return -1;
-        //    } if (b.date === null) {
-        //    return 1;
-        //  } else 
-        // (new Date(a.date) > new Date(b.date) ? -1 : new Date(a.date) < new Date(b.date) ? 1 : 0)
-        // })
+    .sort(antiChrono)
         .map(bill => row(bill)).join("") : ""
   }
 
