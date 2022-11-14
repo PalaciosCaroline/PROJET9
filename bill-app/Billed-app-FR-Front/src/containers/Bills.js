@@ -40,7 +40,8 @@ export default class {
             return {
               ...doc,
               // date: doc.date ? formatDate(doc.date): "indéfinie",
-              formatedDate: doc.date ? formatDate(doc.date) : 'indéfinie',
+              // formatedDate: doc.date ? formatDate(doc.date) : 'indéfinie',
+              date: formatDate(doc.date),
               status: formatStatus(doc.status)
             }
         // const bills = snapshot

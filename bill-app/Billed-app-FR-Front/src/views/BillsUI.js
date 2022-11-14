@@ -6,12 +6,12 @@ import Actions from './Actions.js'
 
 const row = (bill) => {
   //acceptation des seuls newBill avec form complété en plus du fichier
-  if(bill.type != null){
+  //  if(bill.type != null){
     return (`
       <tr>
         <td>${bill.type}</td>
         <td>${bill.name}</td>
-        <td data-testid="formatDate">${bill.formatedDate ? bill.formatedDate : bill.date}</td>
+        <td data-testid="formatDate">${bill.date}</td>
         <td>${bill.amount} €</td>
         <td>${bill.status}</td>
         <td>
@@ -19,28 +19,19 @@ const row = (bill) => {
         </td>
       </tr>
       `)
-    }
+    //  }
   }
-
-  
-
-  // const rows = (data) => {
-  //   let sorted = data?.length > 0 ? [...data] : []
-  //   return (data && data.length) ? sorted.sort(function (a, b) {
-  //     return new Date(a.date) < new Date(b.date) ? 1 : -1
-  //   }).map(bill => {return row(bill)}).join("") : ""
-  // }
 
   const rows = (data) => {
     return (data && data.length) ? data
-        .sort((a, b) => {
-        //   if (a.date === null) {
-        //   return -1;
-        //   } if (b.date === null) {
-        //   return 1;
-        // } else 
-        (new Date(a.date) > new Date(b.date) ? -1 : new Date(a.date) < new Date(b.date) ? 1 : 0)
-        })
+        // .sort((a, b) => {
+        //    if (a.date === null) {
+        //    return -1;
+        //    } if (b.date === null) {
+        //    return 1;
+        //  } else 
+        // (new Date(a.date) > new Date(b.date) ? -1 : new Date(a.date) < new Date(b.date) ? 1 : 0)
+        // })
         .map(bill => row(bill)).join("") : ""
   }
 
