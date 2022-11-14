@@ -6,10 +6,10 @@ import Actions from './Actions.js'
 
 const row = (bill) => {
   //acceptation des seuls newBill avec form complété en plus du fichier
-  //  if(bill.type != null){
+  if(bill.type != null){
     return (`
       <tr>
-        <td>${bill.type}</td>
+        <td data-testid="billType">${bill.type}</td>
         <td>${bill.name}</td>
         <td data-testid="formatDate">${bill.date}</td>
         <td>${bill.amount} €</td>
@@ -19,7 +19,7 @@ const row = (bill) => {
         </td>
       </tr>
       `)
-    //  }
+    }
   }
 
   const rows = (data) => {
@@ -65,7 +65,7 @@ export default ({ data: bills, loading, error }) => {
       ${VerticalLayout(120)}
       <div class='content'>
         <div class='content-header'>
-          <div class='content-title' data-testid="Mes-notes-de-frais"> Mes notes de frais </div>
+          <div class='content-title' data-testid="Mes-notes-de-frais">Mes notes de frais</div>
           <button type="button" data-testid='btn-new-bill' class="btn btn-primary">Nouvelle note de frais</button>
         </div>
         <div id="data-table">

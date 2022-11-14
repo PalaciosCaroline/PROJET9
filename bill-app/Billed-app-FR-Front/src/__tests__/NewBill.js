@@ -186,7 +186,6 @@ describe("Given I am connected as an employee", () => {
       //create bills à vérifier
    
       expect(mockStore.bills).toHaveBeenCalled();
-      await expect(console.log).toHaveBeenCalledTimes(2)
      
     })
 
@@ -271,7 +270,8 @@ describe("I submit a valid bill form", () => {
     userEvent.click(btnSubmit)
     expect(handleSubmit).toHaveBeenCalled()
     expect(updateBill).toHaveBeenCalled()
-     expect(mockStore.bills).toHaveBeenCalled();
+    expect(mockStore.bills).toHaveBeenCalled();
+
   })
 })
 

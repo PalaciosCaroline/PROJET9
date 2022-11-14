@@ -96,12 +96,12 @@ describe('Given I am connected as Employe and I am on bills page', () => {
       const modalFile = document.getElementById('modaleFile')
       // const modaleFileEmploye = screen.getByTestId("modaleFileEmploye")
       const handleClickIconEye = jest.fn(BillsContainer.handleClickIconEye);
+      expect(iconEye.length).toBe(4)
       iconEye.forEach(icon => {
         icon.addEventListener('click', handleClickIconEye)
         userEvent.click(icon);
       })
       expect(handleClickIconEye).toHaveBeenCalledTimes(iconEye.length)
-
     })
 
     test("a modal show for each icon", () => {
