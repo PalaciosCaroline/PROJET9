@@ -14,15 +14,9 @@ export default class {
     if (iconEye) iconEye.forEach(icon => {
       icon.addEventListener('click', () => this.handleClickIconEye(icon))
     })
-    // if (iconCharged) iconCharged.forEach(icon => {
-    //   icon.addEventListener('click', (icon) => {
-    //     const billUrl = icon.getAttribute("data-bill-url")
-    //     const downloadedImg = new Image;
-    //     downloadedImg.src = billUrl;
-    //     download(downloadedImg);
-    //   })
-    // })
-
+    if (iconCharged) iconCharged.forEach(icon => {
+      icon.addEventListener('click', () => this.downloading(icon))
+    })
 
     new Logout({ document, localStorage, onNavigate })
   }
@@ -39,41 +33,49 @@ export default class {
     $('#modaleFile').modal('show')
   }
 
-  // chargeIcon = (icon) => {
-  //   // e.preventDefault();
-  //   const billUrl = icon.getAttribute("data-bill-url")
-  //   console.log(billUrl)
-  //   window.location.href = billUrl;
-  //  }
-   
+  downloadImage = (icon) => {
+    const billUrl = icon.getAttribute("data-bill-url");
+    const downloadedImg = new Image;
+    downloadedImg.src = billUrl;
+    download(downloadedImg);
+  }
 
-  // startDownload = (icon) => {
-  //   const billUrl = icon.getAttribute("data-bill-url")
-  //   let imageURL = billUrl;
+  downloading = (icon) => browser.downloads.download({
+    url : icon.getAttribute("data-bill-url"),
+    filename : icon.getAttribute("data-bill-filename"),
+    conflictAction : 'uniquify'
+  });
   
-  //   const downloadedImg = new Image;
-  //   downloadedImg.crossOrigin = "Anonymous";
-  //   downloadedImg.addEventListener("load", imageReceived, false);
-  //   downloadedImg.src = imageURL;
-  // }
 
-  // imageReceived() {
-  //   let canvas = document.createElement("canvas");
-  //   let context = canvas.getContext("2d");
+  downloadFile = (icon) => {
+    fetch(url, { method: 'get', mode: 'no-cors', referrerPolicy: 'no-referrer' })
+      .then(res => res.blob())
+      .then(res => {
+        const fileName = icon.getAttribute("data-bill-url");
+        const aElement = document.createElement('a');
+        aElement.setAttribute('download', fileName);
+        const href = URL.createObjectURL(res);
+        href = fileName;
+        aElement.href = href;
+        // aElement.setAttribute('href', href);
+        aElement.setAttribute('target', '_blank');
+        aElement.click();
+        URL.revokeObjectURL(href);
+      });
+  };
+
   
-  //   canvas.width = downloadedImg.width;
-  //   canvas.height = downloadedImg.height;
+
+  startDownload = (icon) => {
+    const billUrl = icon.getAttribute("data-bill-url")
+    let imageURL = billUrl;
   
-  //   context.drawImage(downloadedImg, 0, 0);
-  //   imageBox.appendChild(canvas);
-  
-  //   try {
-  //     localStorage.setItem("saved-image-example", canvas.toDataURL("image/png"));
-  //   }
-  //   catch(err) {
-  //     console.log("Error: " + err);
-  //   }
-  // }
+    const downloadedImg = new Image;
+    downloadedImg.crossOrigin = "Anonymous";
+    downloadedImg.addEventListener("load", imageReceived, false);
+    downloadedImg.src = imageURL;
+  }
+
 
   getBills = () => {
     if (this.store) {
