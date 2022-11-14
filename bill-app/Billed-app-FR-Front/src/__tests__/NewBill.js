@@ -111,11 +111,11 @@ describe("Given I am connected as an employee", () => {
   })
 })
 
+//test upload a file
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
     beforeEach(() => {
-      // jest.spyOn(mockStore, "bills")
-      // jest.mock("../app/store");
+     
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
@@ -133,7 +133,7 @@ describe("Given I am connected as an employee", () => {
       router();
     });
 
-    test("Then I upload a new file with a good format, a new file is upload", async () => {
+    test("Then I upload a new file with a good format, a new file is upload and a bill is created", async () => {
       
       jest.spyOn(mockStore, "bills")
       
@@ -246,7 +246,7 @@ describe("Given I am connected as an employee", () => {
 })
 
 describe("I submit a valid bill form", () => {
-  test('then a bill is created', async () => {
+  test('then a bill is update', async () => {
 
     document.body.innerHTML = NewBillUI()
      const newBill = new NewBill({
@@ -287,7 +287,6 @@ describe("I submit a valid bill form", () => {
     expect(handleSubmit).toHaveBeenCalled()
     expect(updateBill).toHaveBeenCalled()
     expect(mockStore.bills).toHaveBeenCalled();
-
   })
 })
 
