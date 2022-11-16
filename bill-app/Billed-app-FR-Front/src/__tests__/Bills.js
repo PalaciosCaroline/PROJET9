@@ -13,9 +13,7 @@ import { ROUTES, ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
 import router from "../app/Router.js";
 import mockStore from "../__mocks__/store"
-import { log } from 'console'
 
-import NewBill from '../containers/NewBill.js'
 describe("Given I am connected as an employee", () => {
   describe('When I am on Bills page but it is loading', () => {
     test('Then, Loading page should be rendered', () => {
@@ -71,22 +69,6 @@ describe("Given I am connected as an employee", () => {
     })
 
     test("and display all iconEye ", async () => {
-      // Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      // window.localStorage.setItem('user', JSON.stringify({
-      //   type: 'Employee'
-      // }))
-      // const root = document.createElement("div")
-      // root.setAttribute("id", "root")
-      // document.body.append(root)
-      // router()
-      // window.onNavigate(ROUTES_PATH.Bills)
-
-      // const onNavigate = (pathname) => {
-      //   document.body.innerHTML = ROUTES({ pathname })
-      // }
-      // const billsTest = new BillsContainer({
-      //   document, onNavigate, store: mockStore, localStorage: window.localStorage
-      // })
       document.body.innerHTML = BillsUI({ data: bills })
       const iconEye = await screen.getAllByTestId("icon-eye");
       expect(iconEye[0]).toBeTruthy()
@@ -99,21 +81,21 @@ describe("Given I am connected as an employee", () => {
 // test d'intégration 
 describe('Given I am connected as Employe and I am on bills page', () => {
   describe('When I click on the icon eye', () => {
-  beforeEach(() => {
-    Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-    window.localStorage.setItem('user', JSON.stringify({
-      type: 'Employee',
-      email: "a@a"
-    }))
-    const root = document.createElement("div")
-    root.setAttribute("id", "root")
-    document.body.append(root)
-    router()
-    window.onNavigate(ROUTES_PATH.Bills)
-    const onNavigate = (pathname) => {
-      document.body.innerHTML = ROUTES({ pathname })
-    }
-  })
+    beforeEach(() => {
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee',
+        email: "a@a"
+      }))
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+      window.onNavigate(ROUTES_PATH.Bills)
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+    })
 
     test('a function handleClickIconEye is called', () => {
       document.body.innerHTML = BillsUI({ data: bills })
@@ -159,7 +141,6 @@ describe('Given I am connected as Employe and I am on bills page', () => {
   })
 })
 
-// test d'intégration GET
 describe("Given I am a user connected as Employe and I am on bills page", () => {
   describe("and I click on newBill button", () => {
     beforeEach(() => {
@@ -198,8 +179,8 @@ describe("Given I am a user connected as Employe and I am on bills page", () => 
       expect(screen.findAllByTitle("Envoyer une note de frais")).toBeTruthy()
     })
   })
+})
 
-// test d'intégration GET
 describe("Given I am a user connected as Employe and I am on bills page", () => {
   describe(" When fetches bills from mock API POST and no error occurs on API, ", () => {
   beforeEach(() => {
@@ -261,7 +242,7 @@ describe("Given I am a user connected as Employe and I am on bills page", () => 
         expect(bills[0].date).toBe('wrongDate');
         const formatDates = screen.getAllByTestId('formatDate');
         expect(formatDates[0]).toHaveTextContent('wrongDate'); 
-      })
+    })
   
       test('if corrupted data was introduced, should log the error}', async () => {
         const storeTest = {
@@ -291,15 +272,13 @@ describe("Given I am a user connected as Employe and I am on bills page", () => 
         const consoleLog = jest.spyOn(console, 'log')
         const data = await billsTest.getBills()
         expect(consoleLog).toHaveBeenCalled()     
-      }) 
     }) 
-  })
+  }) 
 })
 
 describe("Given I am a user connected as Employe", () => {
   describe("When an error occurs on API", () => {
     beforeEach(() => {
-      // jest.spyOn(mockStore, "bills")
       Object.defineProperty(
           window,
           'localStorage',
@@ -326,21 +305,21 @@ describe("Given I am a user connected as Employe", () => {
         document.body.innerHTML = BillsUI({ error: 'Erreur 404' })
         const message = screen.getByText(/Erreur 404/)
         expect(message).toBeTruthy()
-      })
-
-      test("fetches messages from an API and fails with 500 message error", async () => {
-        mockStore.bills.mockImplementationOnce(() => {
-          return {
-            list: () => {
-              return Promise.reject(new Error("Erreur 500"))
-            }
-          }
-        })
-        document.body.innerHTML = BillsUI({ error: 'Erreur 500' })
-        const message = screen.getByText(/Erreur 500/)
-        expect(message).toBeTruthy()
-      })
     })
+
+    test("fetches messages from an API and fails with 500 message error", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list: () => {
+            return Promise.reject(new Error("Erreur 500"))
+          }
+        }
+      })
+      document.body.innerHTML = BillsUI({ error: 'Erreur 500' })
+      const message = screen.getByText(/Erreur 500/)
+      expect(message).toBeTruthy()
+    }) 
+  })
 })
 
 
