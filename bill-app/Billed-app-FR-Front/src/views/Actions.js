@@ -1,8 +1,5 @@
 import eyeBlueIcon from "../assets/svg/eye_blue.js"
 import downloadBlueIcon from "../assets/svg/download_blue.js"
-import download from "../app/download.js"
-
-
 
 export default (billUrl, fileName) => {
   return (
