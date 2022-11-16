@@ -7,22 +7,12 @@ import NewBillUI from "../views/NewBillUI.js"
 import BillsUI from "../views/BillsUI.js"
 import NewBill from "../containers/NewBill.js"
 import "@testing-library/jest-dom";
-import {
-  getByRole,
-  getByTestId,
-  getByLabelText,
-  fireEvent,
-  waitFor
-} from "@testing-library/dom";
+import { fireEvent, waitFor } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
-
-import { bills } from "../fixtures/bills.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store";
-import { log } from "console";
 import router from "../app/Router.js";
-import { data, fn } from "jquery";
 
 jest.mock("../app/store", () => mockStore)
 global.console = {
@@ -32,18 +22,16 @@ global.console = {
 }
 
 describe("Given I am connected as an employee", () => {
-  describe("When I am on NewBill Page", () => {
+  describe("When I am on NewBill Page", () => {    
     test("Then The Title is display", () => {
       const html = NewBillUI()
       document.body.innerHTML = html
-      //to-do write assertion
       expect(screen.getByText("Envoyer une note de frais")).toBeTruthy();
     })
 
     test("Then New Bill form should display", () => {
       const html = NewBillUI()
       document.body.innerHTML = html
-      //to-do write assertion
       const formNewBill = screen.getByTestId("form-new-bill");
       expect(formNewBill).toBeTruthy();
     })
@@ -61,13 +49,6 @@ describe("Given I am connected as an employee", () => {
       expect(screen.getByTestId('file')).toBeTruthy()
       expect(document.querySelector('#btn-send-bill')).toBeTruthy();
     })
-  })
-})
-
-describe("Given I am connected as an employee", () => {
-  describe("When I am on NewBill Page", () => {
-    const html = NewBillUI()
-      document.body.innerHTML = html
 
     test("should require the select type expense", () => {
       const selectType = screen.getByTestId("expense-type");
@@ -91,7 +72,6 @@ describe("Given I am connected as an employee", () => {
     })
 
     test("Then bill icon in vertical layout should be highlighted", async () => {
-
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -115,11 +95,9 @@ describe("Given I am connected as an employee", () => {
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
     beforeEach(() => {
-     
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
-
       window.localStorage.setItem(
         "user",
         JSON.stringify({
@@ -134,9 +112,7 @@ describe("Given I am connected as an employee", () => {
     });
 
     test("Then I upload a new file with a good format, a new file is upload and a bill is created", async () => {
-      
       jest.spyOn(mockStore, "bills")
-      
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
       };
@@ -153,7 +129,7 @@ describe("Given I am connected as an employee", () => {
 
       jest.spyOn(window, "alert").mockImplementation(() => {});
       const billsSpy = jest.spyOn(mockStore.bills(), "create");  
-      newBilltest.mockStore = jest.fn().mockResolvedValue({});
+      // newBilltest.mockStore = jest.fn().mockResolvedValue({});
       newBilltest.billsSpy = jest.fn().mockResolvedValue({});
       console.log = jest.fn()
       const handleChangeFile = jest.fn((e) => newBilltest.handleChangeFile(e));
@@ -162,20 +138,17 @@ describe("Given I am connected as an employee", () => {
       const newBillFile = screen.getByTestId("file");
       expect(newBillFile.files).toHaveLength(0)
       newBillFile.addEventListener("change", (e) => handleChangeFile(e));
-      // fireEvent.change(newBillFile, { target: { files: [file] } });
       userEvent.upload(newBillFile, file)
       expect(newBillFile.files[0]).toStrictEqual(file)
       expect(newBillFile.files).toHaveLength(1)
       expect(newBillFile.files[0].name).toBe("image.png");
-    
       expect(handleChangeFile).toHaveBeenCalledTimes(1);
       expect(window.alert).not.toBeCalled();
       expect(newBillFile.value).not.toBeNull 
-      expect(mockStore.bills).toHaveBeenCalled();
+      expect(billsSpy).toHaveBeenCalled();
     })
 
     test("Then I upload a new file with a good format, but there is fails with 404 message error when a new file is upload", async () => {
-      
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
       };
@@ -244,10 +217,9 @@ describe("Given I am connected as an employee", () => {
     })
   })
 })
-
+//test submit a newBill
 describe("I submit a valid bill form", () => {
   test('then a bill is update', async () => {
-
     document.body.innerHTML = NewBillUI()
      const newBill = new NewBill({
        document, onNavigate, store: mockStore , localStorage: window.localStorage
@@ -283,7 +255,7 @@ describe("I submit a valid bill form", () => {
     const updateBill = jest.spyOn(newBill, 'updateBill')
    
     submit.addEventListener('submit', (e) => handleSubmit(e))
-    userEvent.click(btnSubmit)
+    userEvent.click(btnSubmit, )
     expect(handleSubmit).toHaveBeenCalled()
     expect(updateBill).toHaveBeenCalled()
     expect(mockStore.bills).toHaveBeenCalled();
@@ -294,6 +266,7 @@ describe("I submit a valid bill form", () => {
 describe("When an error occurs on API", () => {
   beforeEach(() => {
     jest.spyOn(mockStore, "bills")
+    console.error = jest.fn();
     Object.defineProperty(
         window,
         'localStorage',
@@ -307,7 +280,6 @@ describe("When an error occurs on API", () => {
     root.setAttribute("id", "root")
     document.body.appendChild(root)
     router()
-
     const onNavigate = (pathname) => {
       document.body.innerHTML = ROUTES({ pathname });
     };
@@ -315,8 +287,6 @@ describe("When an error occurs on API", () => {
   })
 
   test("Then it adds bill to the API and fails with 404 message error", async () => {
-    console.error = jest.fn();
-
     mockStore.bills.mockImplementationOnce(() => {
       return {
         update: () => {
@@ -325,11 +295,7 @@ describe("When an error occurs on API", () => {
       };
     });
 
-    const newBill = new NewBill({
-      document,
-      onNavigate,
-      store: mockStore,
-      localStorage: window.localStorage,
+    const newBill = new NewBill({document, onNavigate, store: mockStore, localStorage: window.localStorage,
     });
 
     const form = screen.getByTestId("form-new-bill");
@@ -343,7 +309,6 @@ describe("When an error occurs on API", () => {
   });
 
   test("Then it adds bill to the API and fails with 500 message error", async () => {
-    console.error = jest.fn();
     mockStore.bills.mockImplementationOnce(() => {
       return {
         update: () => {
@@ -352,11 +317,7 @@ describe("When an error occurs on API", () => {
       };
     });
 
-    const newBill = new NewBill({
-      document,
-      onNavigate,
-      store: mockStore,
-      localStorage: window.localStorage,
+    const newBill = new NewBill({ document, onNavigate, store: mockStore, localStorage: window.localStorage,
     });
 
     const form = screen.getByTestId("form-new-bill");
