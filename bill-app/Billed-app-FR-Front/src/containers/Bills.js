@@ -13,12 +13,7 @@ export default class {
     const iconCharged = document.querySelectorAll(`a[data-testid="icon-Charged"]`)
     if (iconEye) iconEye.forEach(icon => {
       icon.addEventListener('click', () => this.handleClickIconEye(icon))
-    })
-    //exécution de la fonction au clic
-    // if (iconCharged) iconCharged.forEach(icon => {
-    //   icon.addEventListener('click', () => this.download3(icon))
-    // })
-    
+    }) 
     new Logout({ document, localStorage, onNavigate })
   }
   

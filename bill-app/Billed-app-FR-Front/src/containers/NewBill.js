@@ -40,7 +40,6 @@ export default class NewBill {
         }
       })
       .then(({fileUrl, key}) => {
-        console.log(key)
         this.billId = key
         this.fileUrl = fileUrl
         this.fileName = fileName

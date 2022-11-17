@@ -129,7 +129,6 @@ describe("Given I am connected as an employee", () => {
 
       jest.spyOn(window, "alert").mockImplementation(() => {});
       const billsSpy = jest.spyOn(mockStore.bills(), "create");  
-      // newBilltest.mockStore = jest.fn().mockResolvedValue({});
       newBilltest.billsSpy = jest.fn().mockResolvedValue({});
       console.log = jest.fn()
       const handleChangeFile = jest.fn((e) => newBilltest.handleChangeFile(e));
