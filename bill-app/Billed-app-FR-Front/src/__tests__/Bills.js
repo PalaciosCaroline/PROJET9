@@ -28,7 +28,6 @@ describe("Given I am connected as an employee", () => {
     })
   })
 
-// describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page loaded", () => {
 
     test("display Bills page", async () => {
