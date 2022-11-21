@@ -143,7 +143,6 @@ describe('Given I am connected as Employe and I am on bills page', () => {
 describe("Given I am a user connected as Employe and I am on bills page", () => {
   describe("and I click on newBill button", () => {
     beforeEach(() => {
-      // jest.spyOn(mockStore, "bills")
       Object.defineProperty(
           window,
           'localStorage',
