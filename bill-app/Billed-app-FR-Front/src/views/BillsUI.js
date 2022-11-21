@@ -23,6 +23,7 @@ const row = (bill) => {
   }
 
   const rows = (data) => {
+    //affichage par date décroissante des bills
     const antiChrono = (a, b) => (a.date < b.date) ? 1 : -1;
     return (data && data.length) ? data
     .sort(antiChrono)

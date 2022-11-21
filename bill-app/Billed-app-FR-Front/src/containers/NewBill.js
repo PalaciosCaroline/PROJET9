@@ -19,18 +19,19 @@ export default class NewBill {
   handleChangeFile = e => {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const regex = /.(jpg|jpeg|png)$/i;
+    console.log(file.name)
+    if (!regex.test(file.name)){
+      e.target.value = '';
+      alert("Seulement les formats de fichiers jpg/jpeg et png sont autorisés!");
+      return false;
+    }
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
     formData.append('file', file)
     formData.append('email', email)
-    const regex = /.(jpg|jpeg|png)$/i;
-    if (!regex.test(file.name)){
-      e.target.value = '';
-        alert("Seulement les formats de fichiers jpg/jpeg et png sont autorisés!");
-        return false;
-    }
     this.store
       .bills()
       .create({

@@ -133,7 +133,8 @@ export default class {
   handleShowTickets(e, bills, index) {
     if (this.counter === undefined || this.index !== index) this.counter = 0
     if (this.index === undefined || this.index !== index) this.index = index
-    if (!$(`#arrow-icon${this.index}`).hasClass('open')) {
+    // if (this.counter % 2 === 0) {
+     if (!$(`#arrow-icon${this.index}`).hasClass('open')) {
       $(`#arrow-icon${this.index}`).toggleClass('open')
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
       $(`#status-bills-container${this.index}`)
@@ -148,6 +149,7 @@ export default class {
     }
 
     bills.forEach(bill => {
+      //suppression de l'event click attaché à  $(`#open-bill${bill.id}`)
       $(`#open-bill${bill.id}`).off('click');
       $(`#open-bill${bill.id}`).on('click', (e) => this.handleEditTicket(e, bill, bills))
     })
