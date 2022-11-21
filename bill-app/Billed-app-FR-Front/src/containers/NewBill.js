@@ -21,6 +21,7 @@ export default class NewBill {
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const regex = /.(jpg|jpeg|png)$/i;
     console.log(file.name)
+    //blocage des fichiers autres qu'image
     if (!regex.test(file.name)){
       e.target.value = '';
       alert("Seulement les formats de fichiers jpg/jpeg et png sont autorisés!");
