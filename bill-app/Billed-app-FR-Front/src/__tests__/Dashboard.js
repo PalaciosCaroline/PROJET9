@@ -77,11 +77,14 @@ describe('Given I am connected as an Admin', () => {
       expect(handleShowTickets1).toHaveBeenCalled()
       await waitFor(() => screen.getByTestId(`open-bill47qAXb6fIm2zOKkLzMro`) )
       expect(screen.getByTestId(`open-bill47qAXb6fIm2zOKkLzMro`)).toBeTruthy()
+
+      userEvent.click(icon1)
+      expect(icon1.style['transform']).toEqual('rotate(90deg)')
+
       icon2.addEventListener('click', handleShowTickets2)
       userEvent.click(icon2)
       expect(handleShowTickets2).toHaveBeenCalled()
       await waitFor(() => screen.getByTestId(`open-billUIUZtnPQvnbFnB0ozvJh`) )
-      expect(screen.getByTestId(`open-billUIUZtnPQvnbFnB0ozvJh`)).toBeTruthy()
 
       icon3.addEventListener('click', handleShowTickets3)
       userEvent.click(icon3)
@@ -90,6 +93,42 @@ describe('Given I am connected as an Admin', () => {
       expect(screen.getByTestId(`open-billBeKy5Mo4jkmdfPGYpTxZ`)).toBeTruthy()
     })
   })
+
+  // describe('When I am on Dashboard page and I click twice on arrow', () => {
+  //   test('Then, tickets list should be closed, and cards should disappear', async () => {
+
+  //     const onNavigate = (pathname) => {
+  //       document.body.innerHTML = ROUTES({ pathname })
+  //     }
+
+  //     Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+  //     window.localStorage.setItem('user', JSON.stringify({
+  //       type: 'Admin'
+  //     }))
+
+  //     const dashboard = new Dashboard({
+  //       document, onNavigate, store: null, bills:bills, localStorage: window.localStorage
+  //     })
+  //     document.body.innerHTML = DashboardUI({ data: { bills } })
+  //     dashboard.arrowIconState[`isOpen1`] = true;
+  //     // const arrowIconState[`isOpen1`]
+  //     // myMock.mockReturnValueOnce(false)
+  //     const handleShowTickets1 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 1))
+  //     const icon1 = screen.getByTestId('arrow-icon1')
+
+  //     icon1.addEventListener('click', handleShowTickets1)
+  //     userEvent.click(icon1)
+  //     expect(handleShowTickets1).toHaveBeenCalled()
+  //     // await waitFor(() => screen.getByTestId(`open-bill47qAXb6fIm2zOKkLzMro`) )
+  //     // expect(screen.getByTestId(`open-bill47qAXb6fIm2zOKkLzMro`)).toBeTruthy()
+
+  //     // icon1.addEventListener('click', handleShowTickets1)
+  //     // userEvent.click(icon1)
+      
+
+    
+  //   })
+  // })
 
   describe('When I am on Dashboard page and I click on edit icon of a card', () => {
     test('Then, right form should be filled',  () => {
@@ -147,10 +186,11 @@ describe('Given I am connected as an Admin', () => {
       userEvent.click(iconEdit)
       const bigBilledIcon = screen.queryByTestId("big-billed-icon")
       expect(bigBilledIcon).toBeTruthy()
-
-      const statusbillscontainer1 = document.getElementById('status-bills-container1').innerText;
-    
-      // expect(statusbillscontainer1).toBeNull()
+      // const statusbillscontainer1 = document.getElementById('status-bills-container1').innerText;
+      // expect(statusbillscontainer1).toBeUndefined
+     
+      const statusbillscontainer1 = document.getElementById('status-bills-container1');
+      expect(statusbillscontainer1.textContent).toBeNull
     })
   })
 

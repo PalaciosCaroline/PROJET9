@@ -11,10 +11,10 @@ const row = (bill) => {
       <tr>
         <td data-testid="billType">${bill.type}</td>
         <td>${bill.name}</td>
-        <td data-testid="formatDate">${bill.formatedDate ?? bill.date}</td>
+        <td data-testid="formatDateTest">${bill.formatedDate ?? bill.date}</td>
         <td>${bill.amount} €</td>
         <td>${bill.status}</td>
-        <td>
+        <td data-testid="testFileUrl">
           ${Actions(bill.fileUrl)}
         </td>
       </tr>

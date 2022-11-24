@@ -7,6 +7,7 @@ import { fireEvent } from '@testing-library/dom'
 import userEvent from '@testing-library/user-event'
 import {screen, waitFor} from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
+import { formatDate, formatStatus } from "../app/format.js"
 import BillsContainer from "../containers/Bills"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES, ROUTES_PATH} from "../constants/routes.js";
@@ -70,10 +71,7 @@ describe("Given I am connected as an employee", () => {
     test("and display all iconEye ", async () => {
       document.body.innerHTML = BillsUI({ data: bills })
       const iconEye = await screen.getAllByTestId("icon-eye");
-      expect(iconEye[0]).toBeTruthy()
-      expect(iconEye[1]).toBeTruthy()
-      expect(iconEye[2]).toBeTruthy()
-      expect(iconEye[3]).toBeTruthy()
+      expect(iconEye.length).toBe(4)
     })
   })
 })
@@ -101,7 +99,6 @@ describe('Given I am connected as Employe and I am on bills page', () => {
       const iconEye = screen.getAllByTestId("icon-eye");
       const modalFile = document.getElementById('modaleFile')
       const handleClickIconEye = jest.fn(BillsContainer.handleClickIconEye);
-      expect(iconEye.length).toBe(4)
       iconEye.forEach(icon => {
         icon.addEventListener('click', handleClickIconEye(icon))
         userEvent.click(icon);
@@ -116,7 +113,6 @@ describe('Given I am connected as Employe and I am on bills page', () => {
       document.body.innerHTML = BillsUI({ data: bills })
       const handleClickIconEye = jest.fn((icon) => billsTest.handleClickIconEye(icon));
       const iconEye = screen.getAllByTestId("icon-eye");
-      
       const modaleFile = document.getElementById("modaleFile")
       $.fn.modal = jest.fn(() => modaleFile.classList.add("show"))
       iconEye.forEach(icon => {
@@ -214,6 +210,31 @@ describe("Given I am a user connected as Employe and I am on bills page", () => 
       expect(data.length).toBe(4)
     })
 
+    it('if store, should display bills with right date & status format', async () => {
+      const billsTest = new BillsContainer({ document, onNavigate, store: mockStore, localStorage: window.localStorage })
+      const dataSpy = jest.spyOn(billsTest, "getBills")
+      const data = await billsTest.getBills()
+      const mockBills = await mockStore.bills().list()
+      const mockDate = mockBills[0].date
+      const mockStatus = mockBills[0].status
+      expect(dataSpy).toHaveBeenCalledTimes(1)
+      expect(data[0].formatedDate).toEqual(formatDate(mockDate))
+      expect(data[0].status).toEqual(formatStatus(mockStatus))
+    })
+
+    test('display only bills created with a all data no bills create just with justificate file}', async () => {
+      window.onNavigate(ROUTES_PATH.Bills)
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      bills[0].type = null;
+      document.body.innerHTML = BillsUI({ data: bills })
+        expect(bills[0].type).toBe(null);
+        const billType = screen.getAllByTestId('billType');
+        const iconEye = screen.getAllByTestId('icon-eye');
+        expect(iconEye.length).toBe(3); 
+    })
+
     test("receive no data when no store", async () => {
       window.onNavigate(ROUTES_PATH.Bills)
       const onNavigate = (pathname) => {
@@ -225,8 +246,6 @@ describe("Given I am a user connected as Employe and I am on bills page", () => 
       const dataSpy = jest.spyOn(billsTest, "getBills");
       const data = await billsTest.getBills()
       await new Promise(process.nextTick);
-      expect(billsSpy).toHaveBeenCalledTimes(1);
-      expect(dataSpy).toHaveBeenCalledTimes(1);
       expect(data).toBe(undefined)
     })
 
@@ -235,10 +254,11 @@ describe("Given I am a user connected as Employe and I am on bills page", () => 
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
+      bills[0].type = "Hôtel et logement",
       bills[0].date = 'wrongDate';
       document.body.innerHTML = BillsUI({ data: bills })
         expect(bills[0].date).toBe('wrongDate');
-        const formatDates = screen.getAllByTestId('formatDate');
+        const formatDates = screen.getAllByTestId('formatDateTest');
         expect(formatDates[0]).toHaveTextContent('wrongDate'); 
     })
   

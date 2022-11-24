@@ -40,7 +40,7 @@ export default class {
           try {
             return {
               ...doc,
-              formatedDate: doc.date ? formatDate(doc.date) : doc.date,
+              formatedDate: formatDate(doc.date),
               status: formatStatus(doc.status)
               }
             } catch(e) {

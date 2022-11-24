@@ -217,116 +217,120 @@ describe("Given I am connected as an employee", () => {
   })
 })
 //test submit a newBill
-describe("I submit a valid bill form", () => {
-  test('then a bill is update', async () => {
-    document.body.innerHTML = NewBillUI()
-     const newBill = new NewBill({
-       document, onNavigate, store: mockStore , localStorage: window.localStorage
-     })          
- 
-    const submit = screen.queryByTestId('form-new-bill')
-    const btnSubmit = submit.querySelector('#btn-send-bill')
+describe("Given I am connected as an employee and I am a NewBill page", () => {
+  describe("I submit a valid bill form", () => {
+    test('then a bill is update', async () => {
+      document.body.innerHTML = NewBillUI()
+      const newBill = new NewBill({
+        document, onNavigate, store: mockStore , localStorage: window.localStorage
+      })          
+  
+      const submit = screen.queryByTestId('form-new-bill')
+      const btnSubmit = submit.querySelector('#btn-send-bill')
 
-    const newBillTest = {
-      name: "newBillTestName",
-      date: "2020-01-01",
-      type: "Hôtel et logement",
-      pct: 10,
-      amount: 200,
-      "email": "a@a",
-      vat: 40,
-      commentary: "",
-      fileName: "imageTest",
-      "fileUrl": "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=4df6ed2c-12c8-42a2-b013-346c1346f732"
-    }
+      const newBillTest = {
+        name: "newBillTestName",
+        date: "2020-01-01",
+        type: "Hôtel et logement",
+        pct: 10,
+        amount: 200,
+        "email": "a@a",
+        vat: 40,
+        commentary: "",
+        fileName: "imageTest",
+        "fileUrl": "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=4df6ed2c-12c8-42a2-b013-346c1346f732"
+      }
 
-    fireEvent.change(screen.getByTestId('expense-type'), { target: { value: newBillTest.type } })
-    fireEvent.change(screen.getByTestId('expense-name'), { target: { value: newBillTest.name } })
-    fireEvent.change(screen.getByTestId('datepicker'), { target: { value: newBillTest.date } })
-    fireEvent.change(screen.getByTestId('amount'), { target: { value: newBillTest.amount } })
-    fireEvent.change(screen.getByTestId('vat'), { target: { value: newBillTest.vat } })
-    fireEvent.change(screen.getByTestId('pct'), { target: { value: newBillTest.pct } })
-    fireEvent.change(screen.getByTestId('commentary'), { target: { value: newBillTest.commentary } })
-    newBill.fileUrl = newBillTest.fileUrl;
-    newBill.fileName = newBillTest.fileName 
+      fireEvent.change(screen.getByTestId('expense-type'), { target: { value: newBillTest.type } })
+      fireEvent.change(screen.getByTestId('expense-name'), { target: { value: newBillTest.name } })
+      fireEvent.change(screen.getByTestId('datepicker'), { target: { value: newBillTest.date } })
+      fireEvent.change(screen.getByTestId('amount'), { target: { value: newBillTest.amount } })
+      fireEvent.change(screen.getByTestId('vat'), { target: { value: newBillTest.vat } })
+      fireEvent.change(screen.getByTestId('pct'), { target: { value: newBillTest.pct } })
+      fireEvent.change(screen.getByTestId('commentary'), { target: { value: newBillTest.commentary } })
+      newBill.fileUrl = newBillTest.fileUrl;
+      newBill.fileName = newBillTest.fileName 
 
-    const handleSubmit = jest.spyOn(newBill, 'handleSubmit')
-    const updateBill = jest.spyOn(newBill, 'updateBill')
-   
-    submit.addEventListener('submit', (e) => handleSubmit(e))
-    userEvent.click(btnSubmit, )
-    expect(handleSubmit).toHaveBeenCalled()
-    expect(updateBill).toHaveBeenCalled()
-    expect(mockStore.bills).toHaveBeenCalled();
+      const handleSubmit = jest.spyOn(newBill, 'handleSubmit')
+      const updateBill = jest.spyOn(newBill, 'updateBill')
+    
+      submit.addEventListener('submit', (e) => handleSubmit(e))
+      userEvent.click(btnSubmit, )
+      expect(handleSubmit).toHaveBeenCalled()
+      expect(updateBill).toHaveBeenCalled()
+      expect(mockStore.bills).toHaveBeenCalled();
+    })
   })
 })
 
 //Test POST with error
-describe("When an error occurs on API", () => {
-  beforeEach(() => {
-    jest.spyOn(mockStore, "bills")
-    console.error = jest.fn();
-    Object.defineProperty(
-        window,
-        'localStorage',
-        { value: localStorageMock }
-    )
-    window.localStorage.setItem('user', JSON.stringify({
-      type: 'Employee',
-      email: "a@a"
-    }))
-    const root = document.createElement("div")
-    root.setAttribute("id", "root")
-    document.body.appendChild(root)
-    router()
-    const onNavigate = (pathname) => {
-      document.body.innerHTML = ROUTES({ pathname });
-    };
-    window.onNavigate(ROUTES_PATH.NewBill);
-  })
-
-  test("Then it adds bill to the API and fails with 404 message error", async () => {
-    mockStore.bills.mockImplementationOnce(() => {
-      return {
-        update: () => {
-          return Promise.reject(new Error("Erreur 404"));
-        },
+describe("Given I am connected as an employee and I am a NewBill page", () => {
+  describe("When an error occurs on API", () => {
+    beforeEach(() => {
+      jest.spyOn(mockStore, "bills")
+      console.error = jest.fn();
+      Object.defineProperty(
+          window,
+          'localStorage',
+          { value: localStorageMock }
+      )
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee',
+        email: "a@a"
+      }))
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.appendChild(root)
+      router()
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
       };
+      window.onNavigate(ROUTES_PATH.NewBill);
+    })
+
+    test("Then it adds bill to the API and fails with 404 message error", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          update: () => {
+            return Promise.reject(new Error("Erreur 404"));
+          },
+        };
+      });
+
+      const newBill = new NewBill({document, onNavigate, store: mockStore, localStorage: window.localStorage,
+      });
+
+      const form = screen.getByTestId("form-new-bill");
+      const handleSubmit = jest.fn((e) => newBill.handleSubmit(e));
+      form.addEventListener("submit", handleSubmit);
+      fireEvent.submit(form);
+      expect(handleSubmit).toHaveBeenCalled();
+
+      await waitFor(() => new Promise(process.nextTick));
+      expect(console.error).toHaveBeenCalled();
     });
 
-    const newBill = new NewBill({document, onNavigate, store: mockStore, localStorage: window.localStorage,
-    });
+    test("Then it adds bill to the API and fails with 500 message error", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          update: () => {
+            return Promise.reject(new Error("Erreur 500"));
+          },
+        };
+      });
 
-    const form = screen.getByTestId("form-new-bill");
-    const handleSubmit = jest.fn((e) => newBill.handleSubmit(e));
-    form.addEventListener("submit", handleSubmit);
-    fireEvent.submit(form);
-    expect(handleSubmit).toHaveBeenCalled();
+      const newBill = new NewBill({ document, onNavigate, store: mockStore, localStorage: window.localStorage,
+      });
 
-    await waitFor(() => new Promise(process.nextTick));
-    expect(console.error).toHaveBeenCalled();
-  });
+      const form = screen.getByTestId("form-new-bill");
+      const handleSubmit = jest.fn((e) => newBill.handleSubmit(e));
+      form.addEventListener("submit", handleSubmit);
+      fireEvent.submit(form);
+      expect(handleSubmit).toHaveBeenCalled();
 
-  test("Then it adds bill to the API and fails with 500 message error", async () => {
-    mockStore.bills.mockImplementationOnce(() => {
-      return {
-        update: () => {
-          return Promise.reject(new Error("Erreur 500"));
-        },
-      };
-    });
-
-    const newBill = new NewBill({ document, onNavigate, store: mockStore, localStorage: window.localStorage,
-    });
-
-    const form = screen.getByTestId("form-new-bill");
-    const handleSubmit = jest.fn((e) => newBill.handleSubmit(e));
-    form.addEventListener("submit", handleSubmit);
-    fireEvent.submit(form);
-    expect(handleSubmit).toHaveBeenCalled();
-
-    await waitFor(() => new Promise(process.nextTick));
-    expect(console.error).toHaveBeenCalled();
+      await waitFor(() => new Promise(process.nextTick));
+      expect(console.error).toHaveBeenCalled();
+    })
   })
 })
 

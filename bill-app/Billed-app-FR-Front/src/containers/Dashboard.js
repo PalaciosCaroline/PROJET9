@@ -76,6 +76,12 @@ export default class {
     $('#arrow-icon2').on('click', (e) => this.handleShowTickets(e, bills, 2))
     $('#arrow-icon3').on('click', (e) => this.handleShowTickets(e, bills, 3))
     new Logout({ localStorage, onNavigate })
+  
+    this.arrowIconState = {
+      isOpen1: false,
+      isOpen2: false,
+      isOpen3: false,
+    };
   }
 
   handleClickIconEye = () => {
@@ -135,18 +141,16 @@ export default class {
     if (this.index === undefined || this.index !== index) this.index = index
     // if (this.counter % 2 === 0) {
     // vérification sur la classe 'open' pour déroulement ou enroulement liste 
-     if (!$(`#arrow-icon${this.index}`).hasClass('open')) {
-      //déroulement liste
-      //ajout de la classe 'open' pour vérification déroulement liste
-        $(`#arrow-icon${this.index}`).toggleClass('open')
+    $(`#arrow-icon${this.index}`).toggleClass('open')
+    //  if ($(`#arrow-icon${this.index}`).hasClass('open')) {  
+     if (!this.arrowIconState[`isOpen${index}`]) {  
+      this.arrowIconState[`isOpen${index}`] = true
         $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
         $(`#status-bills-container${this.index}`)
           .html(cards(filteredBills(bills, getStatus(this.index))))
         this.counter ++
-    } else {
-      //enroulement liste 
-      //suppression de la classe 'open' pour vérification déroulement liste
-        $(`#arrow-icon${this.index}`).toggleClass('open')
+    } else if (this.arrowIconState[`isOpen${index}`]) {
+      this.arrowIconState[`isOpen${index}`] = false
         $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
         $(`#status-bills-container${this.index}`)
           .html("")
