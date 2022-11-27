@@ -76,6 +76,7 @@ describe("Given I am connected as an employee", () => {
   })
 })
 // test d'intégration 
+//test sur l'affichage du justificatif de la bill avec l'IconEye
 describe('Given I am connected as Employe and I am on bills page', () => {
   describe('When I click on the icon eye', () => {
     beforeEach(() => {
@@ -136,6 +137,7 @@ describe('Given I am connected as Employe and I am on bills page', () => {
   })
 })
 
+//Test sur la newBill
 describe("Given I am a user connected as Employe and I am on bills page", () => {
   describe("and I click on newBill button", () => {
     beforeEach(() => {
@@ -175,8 +177,9 @@ describe("Given I am a user connected as Employe and I am on bills page", () => 
   })
 })
 
+//test sur la réception des données
 describe("Given I am a user connected as Employe and I am on bills page", () => {
-  describe(" When fetches bills from mock API POST and no error occurs on API, ", () => {
+  describe(" When fetches bills from mock API POST", () => {
   beforeEach(() => {
     Object.defineProperty(
         window,
@@ -210,7 +213,7 @@ describe("Given I am a user connected as Employe and I am on bills page", () => 
       expect(data.length).toBe(4)
     })
 
-    it('if store, should display bills with right date & status format', async () => {
+    test('if store, should display bills with right date & status format', async () => {
       const billsTest = new BillsContainer({ document, onNavigate, store: mockStore, localStorage: window.localStorage })
       const dataSpy = jest.spyOn(billsTest, "getBills")
       const data = await billsTest.getBills()
@@ -222,6 +225,7 @@ describe("Given I am a user connected as Employe and I am on bills page", () => 
       expect(data[0].status).toEqual(formatStatus(mockStatus))
     })
 
+    //test de blocage des bills avec créées seulement à partir du justificatif
     test('display only bills created with a all data no bills create just with justificate file}', async () => {
       window.onNavigate(ROUTES_PATH.Bills)
       const onNavigate = (pathname) => {
@@ -235,6 +239,7 @@ describe("Given I am a user connected as Employe and I am on bills page", () => 
         expect(iconEye.length).toBe(3); 
     })
 
+    //test de l'absence de data losque store vide
     test("receive no data when no store", async () => {
       window.onNavigate(ROUTES_PATH.Bills)
       const onNavigate = (pathname) => {
@@ -327,11 +332,7 @@ describe("Given I am a user connected as Employe", () => {
 
     test("fetches messages from an API and fails with 500 message error", async () => {
       mockStore.bills.mockImplementationOnce(() => {
-        return {
-          list: () => {
             return Promise.reject(new Error("Erreur 500"))
-          }
-        }
       })
       document.body.innerHTML = BillsUI({ error: 'Erreur 500' })
       const message = screen.getByText(/Erreur 500/)

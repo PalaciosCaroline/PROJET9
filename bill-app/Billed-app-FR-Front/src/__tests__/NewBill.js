@@ -4,7 +4,6 @@
 
 import { screen } from "@testing-library/dom"
 import NewBillUI from "../views/NewBillUI.js"
-import BillsUI from "../views/BillsUI.js"
 import NewBill from "../containers/NewBill.js"
 import "@testing-library/jest-dom";
 import { fireEvent, waitFor } from "@testing-library/dom";
@@ -91,7 +90,7 @@ describe("Given I am connected as an employee", () => {
   })
 })
 
-//test upload a file
+//test upload a file in form 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
     beforeEach(() => {
@@ -111,6 +110,7 @@ describe("Given I am connected as an employee", () => {
       router();
     });
 
+    //test fichier au bon format et que tout est ok lors de l'utilisation du store
     test("Then I upload a new file with a good format, a new file is upload and a bill is created", async () => {
       jest.spyOn(mockStore, "bills")
       const onNavigate = (pathname) => {
@@ -147,6 +147,7 @@ describe("Given I am connected as an employee", () => {
       expect(billsSpy).toHaveBeenCalled();
     })
 
+    //test fichier au bon format mais survenu d'un catch lors de l'utilisation du store dans la fonction handleChangeFile alors console.error message
     test("Then I upload a new file with a good format, but there is fails with 404 message error when a new file is upload", async () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
@@ -185,9 +186,11 @@ describe("Given I am connected as an employee", () => {
       expect(billsSpy).toHaveBeenCalled();
 
       await waitFor(() => new Promise(process.nextTick));
-      expect(console.error).toHaveBeenCalled();
+      expect(console.error).toHaveBeenCalled()
+    
     })
 
+//test fichier au mauvais format alors window alert et rejet du fichier
     test("Then I upload a new file with a wrong format, a new file is not upload", async () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
@@ -216,7 +219,7 @@ describe("Given I am connected as an employee", () => {
     })
   })
 })
-//test submit a newBill
+//test de soumission d'une nouvelle note de frais alors création d'une nouvelle bill
 describe("Given I am connected as an employee and I am a NewBill page", () => {
   describe("I submit a valid bill form", () => {
     test('then a bill is update', async () => {
@@ -263,7 +266,7 @@ describe("Given I am connected as an employee and I am a NewBill page", () => {
   })
 })
 
-//Test POST with error
+//Test POST with error 404 et 500
 describe("Given I am connected as an employee and I am a NewBill page", () => {
   describe("When an error occurs on API", () => {
     beforeEach(() => {
